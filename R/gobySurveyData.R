@@ -1,0 +1,36 @@
+#'  Tidewater Goby Survey Data
+#'
+#'  A data set containing environmental and ecological variables measured at each of 39 sites located along 400 km of coastline in California and Oregon, USA.  At each site, water samples were collected to extract the DNA of the tidewater goby  (\emph{Eucyclogbobius newberryi}), a federally endangered fish species living in estuaries, lagoons, and sloughs.
+#'
+#'
+#' @format  A data frame consisting of 39 rows and the following 6 columns:
+#' \describe{
+#' \item{site:}{ location sampled for tidewater goby DNA }
+#' \item{twg:}{ abundance index of tidewater gobies (catch per unit effort) }
+#' \item{sal:}{ salinity (parts per thousand) }
+#' \item{turb:}{ turbidity (measured as water filtration time) }
+#' \item{fish:}{ abundance index of fishes other than tidewater gobies (catch per unit effort) }
+#' \item{veg:}{  binary indicator of presence (Pres) or absence (Abs) of vegetation (widgeongrass and filamentous algae) }
+#' }
+#'
+#' 
+#' @docType data
+#'
+#' @usage data(gobySurveyData)
+#'
+#'
+#'
+#'
+#' @source  Schmelzle MC, Kinziger AP (2015) Data from: Using occupancy modeling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species.
+#' \describe{
+#' \item{Dryad Digital Repository:}{ \url{http://dx.doi.org/10.5061/dryad.6rs23} }
+#' \item{File name:}{ "Hierarchical Occupancy Model Input Data.xls" }
+#' }
+#'
+#'
+#' @references  Schmelzle MC, Kinziger AP (2016) Using occupancy modelling to compare environmental DNA to traditional field methods for regional-scale monitoring of an endangered aquatic species.  Molecular Ecology Resources 16: 895–908.
+#' 
+#' \url{http://dx.doi.org/10.1111/1755-0998.12501}
+"gobySurveyData"
+
+

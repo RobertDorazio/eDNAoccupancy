@@ -1,0 +1,561 @@
+\documentclass[article,shortnames,nojss]{jss}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% declarations for jss.cls %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%% almost as usual
+\author{Robert M. Dorazio\\San Francisco State University \And 
+        Richard A. Erickson\\U.S. Geological Survey}
+\title{\pkg{eDNAoccupancy}:  Multi-scale Occupancy Modeling of Environmental {DNA} Data}
+
+%% for pretty printing and a nice hypersummary also set:
+\Plainauthor{Robert M. Dorazio, Richard A. Erickson} %% comma-separated
+\Plaintitle{eDNAoccupancy:  Multi-scale Occupancy Modeling of Environmental {DNA} data} %% without formatting
+\Shorttitle{\pkg{eDNAoccupancy}: Multi-scale Occupancy Modeling} %% a short title (if necessary)
+
+%% an abstract and keywords
+\Abstract{
+
+In this article we describe \pkg{eDNAoccupancy}, an \proglang{R} package  for fitting Bayesian, multi-scale occupancy models.  These models are appropriate for occupancy surveys that include three, nested levels of sampling:  primary sample units within a study area, secondary sample units collected from each primary unit, and replicates of each secondary sample unit.  This design is commonly used in occupancy surveys of environmental DNA (eDNA).  \pkg{eDNAoccupancy}  allows users to specify and fit multi-scale occupancy models with or without covariates, to estimate posterior summaries of occurrence and detection probabilities, and to compare different models using Bayesian model-selection criteria.  We illustrate these features  by analyzing two published data sets:   eDNA surveys of a fungal pathogen of amphibians and eDNA surveys of an endangered fish species.
+}
+\Keywords{{B}ayesian, environmental {DNA}, occupancy survey, species distribution model}
+\Plainkeywords{{B}ayesian, environmental {DNA}, occupancy survey, species distribution model} %% without formatting
+%% at least one keyword must be supplied
+
+%% publication information
+%% NOTE: Typically, this can be left commented and will be filled out by the technical editor
+%% \Volume{50}
+%% \Issue{9}
+%% \Month{June}
+%% \Year{2012}
+%% \Submitdate{2012-06-04}
+%% \Acceptdate{2012-06-04}
+
+%% The address of (at least) one author should be given
+%% in the following format:
+\Address{
+  Robert M.~Dorazio \\
+  Department of Biology\\
+  San Francisco State University \\
+  San Francisco, California, USA  \\
+  E-mail: \email{rdorazio@sfsu.edu}\\ \\
+  Richard A.~Erickson \\
+  Upper Midwest Environmental Sciences Center  \\
+  U.S. Geological Survey\\
+  2630 Fanta Reed Road  \\
+  La Crosse, Wisconsin, USA  \\
+  E-mail: \email{rerickson@usgs.gov}
+}
+%% It is also possible to add a telephone and fax number
+%% before the e-mail in the following format:
+%% Telephone: +43/512/507-7103
+%% Fax: +43/512/507-2851
+
+%% for those who use Sweave please include the following line (with % symbols):
+%% need no \usepackage{Sweave.sty}
+
+%% end of declarations %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%% KnitR DECLARATIONS
+%% for inline R code: if the inline code is not correctly parsed, you will see a message
+\newcommand{\rinline}[1]{KNITR}
+% begin.rcode setup, include=FALSE
+% library(knitr)
+% opts_chunk$set(fig.path='figure/latex-', cache.path='cache/latex-', comment=NA, prompt=TRUE)
+% knit_theme$set('biogoo')
+% end.rcode
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{Introduction to eDNAoccupancy}
+
+
+%% MY MACROS
+\newcommand{\bm}[1]{\mbox{\boldmath{\ensuremath #1}}}
+\usepackage{amsmath}
+\usepackage{amssymb}    % used for symbols in figure legends
+
+
+
+\begin{document}
+
+%% include your article here, just as usual
+
+%% Note that you should use the \pkg{}, \proglang{} and \code{} commands.
+
+
+\section{Introduction}
+
+
+Presence-absence surveys are often used to estimate the spatial distribution of a species.  During these surveys individuals that are present can be missed owing to errors in detection by observers.  These errors are especially common in surveys of animals that are either rare or elusive (e.g., species with cryptic behaviors or coloration).  To account for the possibility of such errors, ecologists often use repeated surveys of each sample location and analyze the resulting data (detections and nondetections) using occupancy models \citep{macKenzie_nichols:2006,royle_dorazio:2008}.  These models allow the occurrence of a species to be estimated accurately while accounting for false-negative errors in detection.
+
+For species that are extremely difficult to detect using conventional (visual or aural) methods, observers often resort to detection of \emph{signs} of species presence (e.g., animal tracks, scat, or fur) that may be observed more reliably.  One such sign is environmental DNA (eDNA), which includes short fragments of DNA shed or left behind by individuals in water or soil \citep{darling_mahon:2011}.  The sources of eDNA can vary but may include skin cells, mucus, eggs, urine, or feces.
+
+Surveys of eDNA are designed to accommodate spatial or temporal heterogenity in the occurrence of eDNA at a sampling location.  This is necessary because even if a location is occupied by a species, not all samples taken from that location will necessarily contain eDNA of the species.  Samples collected at each location are usually intended to serve as spatial or temporal replicates of that location.  Therefore, the presence of eDNA in these samples can depend on many factors, including the source locations of eDNA, the degradation or transport of eDNA from these source locations, and the size of the sample \citep{darling_mahon:2011,dejean_valentini:2011,pilliod_goldberg:2014}.  The amount of eDNA in a sample is usually estimated by amplifying the eDNA in each of several subsamples using polymerase-chain-reaction (PCR) chemistry.  The eDNA in each subsample (or PCR replicate) is measured independently, and each measurement is used to assess whether eDNA is detected or not detected in the subsample \citep{hunter_dorazio:2017}.  Therefore, all eDNA surveys include at least three, nested levels of sampling:
+\begin{enumerate}
+\item  locations (primary sample units) within a study area,
+\item eDNA samples (secondary sample units) collected from each location, and
+\item subsamples (replicate observations) taken from each eDNA sample.
+\end{enumerate}
+More complicated sampling designs are certainly possible, but the three-level design has been used in many, if not most, eDNA-based surveys of individual species.
+
+The class of \emph{multi-scale occupancy models}, developed by \citet{nichols_bailey:2008}, provides a useful  framework for the analysis of data collected in eDNA surveys.  In fact, the hierarchical relationships assumed between parameters of these models are exactly those induced by the three-level, nested sampling design of eDNA surveys.  To our knowledge, this connection was first recognized by \citet{schmidt_kery:2013}, who used a Bayesian approach to fit multi-scale occupancy models  to data collected in eDNA surveys of a fungal pathogen \citep{mordecai_mattsson:2011}.  Since then, these models have been used to analyze eDNA surveys of other species, such as the Burmese python, \emph{Python molurus bivittatus} \citep{hunter_oyler-mccance:2015} and the tidewater goby, \emph{Eucyclogobius newberryi} \citep{schmelzle_kinziger:2016}.
+
+The Bayesian approach to inference is particularly useful when analyzing data collected in eDNA surveys because the primary targets of inference may include latent states of species occurrence.  That is, scientific interest is often focused on the presence or absence of a focal species at locations within the study area or in samples taken from those locations.  In addition, predictions of species occurrence at unsampled locations may be needed, particularly when decisions related to the management or conservation of a species are required.  For these reasons we focused on developing an \proglang{R} package \citep{Rsoftware} for fitting multi-scale occupancy models using modern methods of Bayesian computation (specifically, Markov chain Monte Carlo (MCMC) methods \citep{brooks_gelman:2011}).
+
+Some analyses of eDNA surveys have used software packages, such as \pkg{WinBUGS} \citep{lunn_thomas:2000}, as a Bayesian computational engine \citep[e.g.,][]{schmidt_kery:2013,schmelzle_kinziger:2016}.  An advantage of this approach is the potential for specifying extensions of the model with relative ease.  However, the MCMC algorithms used by \pkg{WinBUGS} are neither known nor selected by users as a matter of design; therefore, users cannot be certain that these algorithms actually provide a Markov chain with the correct stationary distribution (i.e., one that is equivalent to the posterior distribution of the model's parameters).  This limitation motivated \citet{hunter_oyler-mccance:2015} to develop a MCMC algorithm for fitting multi-scale occupancy models; however, their algorithm was limited to fitting models without covariates of eDNA occurrence or detection probabilities.
+
+
+We developed the \proglang{R} package \pkg{eDNAoccupancy}  to provide software for fitting Bayesian, multi-scale occupancy models with or without covariates.  This package is based on a specific MCMC algorithm (see Appendix~\ref{sec:MCMCalgorithm}) so that all calculations can be completed in \proglang{R} without need of additional software.  The remainder of this article is organized as follows.  Section~\ref{sec:OccModels} contains a description of the multi-scale occupancy models that can be fitted with our package, including the notation used for all model parameters.  Section~\ref{sec:Implementation} contains a description of our package's features, including those for model fitting,  model comparison, and prediction.   Section~\ref{sec:Applications} illustrates the use of our package in analyses of data collected in two different eDNA surveys.
+
+
+
+
+
+
+\section{Multi-scale occupancy models}\label{sec:OccModels}
+
+Multi-scale occupancy models include a hierarchy of parameters that specify
+\begin{enumerate}
+\item  the probability of species occurrence at a location,
+\item  the conditional probability of species occurrence in a sample of a location given that the species is present at that location, and
+\item  the conditional probability of species detection in a subsample of a sample given that the species is present in the sample.
+\end{enumerate}
+The original development of these models \citep{nichols_bailey:2008} included two levels of occupancy:   one for occurrence at a location (primary sample unit) and another for occurrence in an independently selected sample (secondary sample unit) of the location.   If individuals of a focal species are able to move among locations during the survey period, the two levels of occupancy can be defined in term of species ``use'' or ``availability'' \citep{mordecai_mattsson:2011}; however, we retain the original definitions of occupancy because they seem more appropriate in surveys of eDNA.  Therefore, we describe the model in terms of probabilities of occurrence of eDNA at study locations and conditional probabilities of occurrence of eDNA in samples collected at these locations.
+
+
+\subsection{Model assumptions and notation}
+
+Following \citet{mordecai_mattsson:2011}, we use a hierarchical model of latent state variables to describe the multi-scale occupancy models that can be fitted with \pkg{eDNAoccupancy}.  Let $Z_i$ denote a binary-valued, random variable to indicate the presence ($Z_i=1$) or absence ($Z_i=0$) of eDNA at the $i$th location within some region of interest ($i = 1, \ldots, M$).  We assume
+\begin{equation}\label{eq:siteOccDistrib}
+Z_i \sim \mathrm{Bernoulli}(\psi_i)
+\end{equation}
+where $\psi_i$ denotes the probability that eDNA is present at the $i$th location.  We specify $\psi_i$ as a function of parameters $\bm{\beta}$ and regressors $\bm{x}_i$ as follows: $\psi_i = \Phi(\bm{x}_i^\prime \bm{\beta})$, where  the prime symbol denotes the transpose of a vector and where $\Phi(\cdot)$ denotes the cumulative distribution function of a standard normal distribution.  Therefore, the parameters $\bm{\beta}$ correspond to the effects of the regressors $\bm{x}_i$ on $\psi_i$.  In eDNA surveys, $\bm{x}_i$ may include measurements of covariates thought to be informative of species occurrence at the $i$th location.
+
+Let $A_{ij}$ denote a binary-valued, random variable to indicate the presence ($A_{ij}=1$) or absence ($A_{ij}=0$) of eDNA in the $j$th sample of the $i$th location  ($j = 1, \ldots, J_i$). We assume
+\begin{equation}\label{eq:sampleOccDistrib}
+A_{ij} | z_i \sim \mathrm{Bernoulli}(z_i  \theta_{ij})
+\end{equation}
+where $z_i$ is a realized value of $Z_i$ and where $\theta_{ij}$ denotes the conditional probability that eDNA is present in the $j$th sample of the $i$th location given that eDNA is present at that location (i.e., given $z_i=1$).  Notice that Eq.~\ref{eq:sampleOccDistrib} implies  $A_{ij}$ equals zero with probability one if the $i$th location is unoccupied.  We specify $\theta_{ij}$ as a function of parameters $\bm{\alpha}$ and regressors $\bm{w}_{ij}$ as follows: $\theta_{ij} =  \Phi(\bm{w}_{ij}^\prime \bm{\alpha})$.  Therefore, the parameters $\bm{\alpha}$ correspond to the effects of the regressors $\bm{w}_{ij}$ on $\theta_{ij}$.
+
+Let $Y_{ijk}$ denote a binary-valued, random variable to indicate whether eDNA is detected ($Y_{ijk}=1$) or not detected ($Y_{ijk}=0$) in the $k$th PCR replicate of the $j$th sample collected at the $i$th location  ($k = 1, \ldots, K_{ij}$).  We assume
+\begin{equation}\label{eq:detectDistrib}
+Y_{ijk} | a_{ij} \sim \mathrm{Bernoulli}(a_{ij}  p_{ijk})
+\end{equation}
+where $a_{ij}$ is a realized value of $A_{ij}$ and where $p_{ijk}$ denotes the conditional probability that eDNA is detected in the $k$th replicate of the $j$th sample collected at the $i$th location given that eDNA is present in that sample  (i.e., given  $a_{ij}=1$).   Each replicate is measured independently for eDNA, and $p_{ijk}$ generally does not differ among replicates; therefore, Eq.~\ref{eq:detectDistrib} implies that the number of replicates $Y_{ij} = \sum_{k=1}^{K_{ij}} Y_{ijk}$ wherein eDNA is detected has a binomial distribution
+\begin{equation}\label{eq:ndetectDistrib}
+Y_{ij} | a_{ij} \sim \mathrm{Binomial}(K_{ij},  a_{ij}  p_{ij})
+\end{equation}
+where $p_{ij}$ denotes the conditional probability of detection of eDNA in each replicate of the $j$th sample collected at the $i$th location given that eDNA is present in that sample.  Notice that Eq.~\ref{eq:ndetectDistrib} implies  $Y_{ij}$ equals zero with probability one if the $j$th sample of the $i$th location does not contain eDNA. We specify $p_{ij}$ as a function of parameters $\bm{\delta}$ and regressors $\bm{v}_{ij}$ as follows: $p_{ij} =  \Phi(\bm{v}_{ij}^\prime \bm{\delta})$.  Therefore, the parameters $\bm{\delta}$ correspond to the effects of the regressors $\bm{v}_{ij}$ on $p_{ij}$.
+
+This class of models is quite versatile as it allows the occurrence eDNA to be modeled among study locations and among samples collected at those locations.  Similarly, the detectability of eDNA can be modeled among study locations or  samples.  Models of detectability are important because they can be used to account for the effects of naturally occurring PCR inhibitors that may be present in samples \citep{mckee_spear:2015}.  Inhibitors reduce the amplification of eDNA in a PCR, potentially affecting detectability of eDNA in PCR replicates.
+
+
+
+
+
+\subsection{Model fitting procedure}
+
+The posterior probability density function $\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta}, \bm{z}, \bm{a} \mid \bm{y})$ of our multi-scale occupancy model's parameters is
+\begin{eqnarray*}
+\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta}, \bm{z}, \bm{a} \mid \bm{y}) &=& C \  \pi(\bm{\beta}, \bm{\alpha}, \bm{\delta})  \prod_{i=1}^M \psi_i^{z_i} (1-\psi_i)^{1-z_i} \\
+&& \times  \prod_{i=1}^M  \prod_{j=1}^{J_i} (z_i \theta_{ij})^{a_{ij}}  (1 -z_i \theta_{ij})^{1-a_{ij}} 
+ \binom{K_{ij}}{y_{ij}} (a_{ij} p_{ij})^{y_{ij}} (1 - a_{ij} p_{ij})^{K_{ij} - y_{ij}} 
+\end{eqnarray*}
+where $\bm{z}$ is an $M$-vector of $z_i$ values, where $\bm{a}$ and $\bm{y}$ are each $M \times max(J_i)$ matrices containing the values of  $a_{ij}$ and $y_{ij}$, respectively, and where $\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta})$ is a prior probability density function of the parameters $\bm{\beta}$, $\bm{\alpha}$, and $\bm{\delta}$.  Note that $C$, the normalization constant required for $\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta}, \bm{z}, \bm{a} \mid \bm{y})$ to be a proper probability density function, cannot be evaluated analytically; therefore, we use MCMC methods \citep{brooks_gelman:2011} to estimate summaries of the posterior distribution with density function $\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta}, \bm{z}, \bm{a} \mid \bm{y})$.   Our MCMC algorithm and choice of prior distributions are described by \citet{dorazio_erickson:2018}
+
+
+
+\section[Implementation in R]{Implementation in \proglang{R}}\label{sec:Implementation}
+
+%% Note: If there is markup in \(sub)section, then it has to be escape as above.
+
+
+The main function of the \pkg{eDNAoccupancy} package is \code{occModel()}, which is used to specify and fit the multi-scale occupancy models described in Section~\ref{sec:OccModels}.  The arguments of \code{occModel()} are as follows:
+% begin.rcode showArguments,  eval=FALSE
+%     occModel(formulaSite, formulaSiteAndSample, formulaReplicate,
+%        detectionMats, siteData = NULL, siteAndSampleData = NULL,
+%        niter, niterInterval, siteColName="site", sampleColName="sample")   
+% end.rcode
+This function includes standard \code{formula} arguments  for specifying model frames \citep{chambers:2008}.  For example, \code{formulaSite} is used to specify a model frame for the probability of occurrence of eDNA at a location.  \code{formulaSiteAndSample} is used to specify a model frame for the conditional probability of occurrence of eDNA in a sample of a location given eDNA is present at that location.  \code{formulaReplicate} is used to specify a model frame for the conditional probabilility of detection of eDNA in a subsample (PCR replicate) given that eDNA is present in the sample.
+
+The remaining arguments of \code{occModel()} include  the number of iterations of the MCMC algorithm (\code{niter}), how often to report its progress (\code{niterInterval}), the detection data (\code{detectionMats}), and (optionally) the covariate data (\code{siteData} or \code{siteAndSampleData}).  The required formats of these data are described in the following section.
+
+
+\code{occModel()} returns a list (object of class \code{occModel}) that includes the following components:
+\begin{itemize}
+
+\item \code{niterations} = total number of iterations that MCMC algorithm was run
+
+\item \code{state} = value of each model parameter after last iteration of the MCMC algorithm
+
+\item \code{y} =  $M \times J$ matrix of number of detections per sample
+
+\item \code{K} =  $M \times J$ matrix of number of subsamples (PCR replicates) per sample
+
+\item \code{X} =  matrix of regressors associated with parameters $\bm{\beta}$
+
+\item \code{W} =  array of regressors associated with parameters $\bm{\alpha}$
+
+\item \code{V} =  array of regressors associated with parameters $\bm{\delta}$
+
+\item \code{siteEffectInW} =  logical indicator of whether parameters $\bm{\alpha}$ contain one element for each site)
+
+\item \code{colNamesOfX} = names of regressors in \code{X}
+
+\item \code{colNamesOfW} = names of regressors in \code{W}
+
+\item \code{colNamesOfV} = names of regressors in \code{V}
+
+\end{itemize}
+where $M$ is the number of survey locations and where $J$ is the maximum number of samples per survey location.
+If desired, additional MCMC iterations may be computed using the function \code{updateOccModel()}, which requires a previously created or updated object of class \code{occModel} as input.
+
+
+
+
+\subsection{Data formats}
+
+The detections and nondetections of eDNA must be saved in a data frame that includes a column containing the survey locations, a column containing integer-valued sample numbers (i.e., 1, 2, \ldots) of each survey location, and one or more columns (one for each subsample or replicate of the sample) containing  binary-valued indicators of whether eDNA was detected (1) or not detected (0).  Thus, each row of this data frame corresponds to the detections and nondetections of eDNA in a single sample.  The function \code{occData()} uses this data frame to compute \code{detectionMats}, the list of data matrices required by \code{occModel()}.
+
+If multi-scale occupancy models are to be fitted using covariates of eDNA occurrence or detection, these covariates must be saved as columns of a data frame.  This data frame also must include a column of survey locations.  If the values of covariates do not differ among samples of a location, the data frame will contain a single row for each survey location.  This kind of data frame is passed using the \code{siteData} argument of \code{occModel()}.    If the values of one or more covariates differ among samples of a survey location, the data frame must include an additional column for the integer-valued sample numbers of each survey location.  This kind of data frame is passed using the \code{siteAndSampleData} argument of \code{occModel()}.  Only one data frame of covariates can be used in a single model, that is, either the \code{siteData} or the \code{siteAndSampleData} argument is used, not both arguments.
+
+
+\subsection{Output of results}
+
+Summaries of the posterior distribution of the parameters $\bm{\beta}$, $\bm{\alpha}$, and $\bm{\delta}$ are generally of interest.  After fitting a model, the function \code{posteriorSummary()} can be used to estimate the posterior mean, median, and 95\% credible limits for each parameter of the multi-scale occupancy model.  The Monte Carlo standard error is optionally computed for each estimate.  In addition to computing Monte Carlo errors, a user can inspect the Markov chain to assess convergence by plotting traces or by estimating levels of autocorrelation.  We provide two functions, \code{plotTrace()} and \code{plotACF()}, that create these plots for one to four parameters at a time.
+
+Users may be interested in computing estimates of eDNA occurrence or detection probabilities for the survey locations or samples.  The functions \code{posteriorSummaryOfSiteOccupancy()}, \code{posteriorSummaryOfSampleOccupancy()}, and \code{posteriorSummaryOfDetection()} estimate posterior summaries (mean, median, and 95\% credible limits) for the derived parameters ($\psi_i$, $\theta_{ij}$, and $p_{ij}$, respectively) of the multi-scale occupancy model.  The Monte Carlo standard error is optionally computed for each estimate. 
+
+We also provide three functions that compute model-selection criteria.  The posterior-predictive loss criterion (PPLC) under squared-error loss \citep{gelfand_ghosh:1998} is computed by \code{posteriorPredictiveLoss()}.  Models with lower values of this criterion are favored.  We provide \code{WAIC()} to compute the widely applicable information criterion (WAIC) \citep{watanabe:2010,watanabe:2013}, which is asymptotically equivalent to Bayesian cross-validation loss.  Models with lower values of WAIC are favored.  We also provide \code{posteriorSummaryOfAUC()} to estimate the posterior mean, median, and 95\% credible limits for the area under the receiver operating characteristic (ROC) curve, AUC \citep{agresti:2002}.  This function, often used in species distribution modeling, is intended to evaluate the model's predictions of occurrence at survey locations.  Unlike the other criteria, this criterion does not directly use the observed data (numbers of detections and nondetections of eDNA in each sample).  Models with higher values of this criterion are favored.
+
+Each of the above-described functions includes a \code{burnin} argument, which specifies the initial portion of the Markov chain that is ignored while estimating summaries of the posterior distribution.  The value of \code{burnin} need not be specified prior to model fitting because the entire Markov chain is stored in a temporary file.  Storing the model output in this file dramatically reduces memory requirements and provides flexibility while computing results.
+
+
+
+
+\section{Applications}\label{sec:Applications}
+
+In the following sections we illustrate uses of \pkg{eDNAoccupancy} by analyzing data collected during eDNA-based occupancy surveys of two different species.
+
+
+
+\subsection{Surveys of a fungal pathogen of amphibians}
+
+The first example considers eDNA surveys of a fungal pathogen, \emph{Batrachochytrium dendrobatidis} (\emph{Bd}), of amphibians \citep{hyman_collins:2012,schmidt_kery:2013}.
+% begin.rcode loadFungalPathogenData
+% library(eDNAoccupancy)
+% data(fungusDetectionData)
+% data(fungusSurveyData)
+% end.rcode
+In these surveys 2--4 water samples were collected  from each of 20 ponds located in Coconino National Forest, Arizona, USA.  The period of sampling included breeding and post-breeding of the boreal chorus frog (\emph{Pseudacris maculata}), a species susceptible to \emph{Bd} infection.  Detections and nondetections of \emph{Bd} DNA were assessed using qPCR in each of two subsamples extracted from each water sample.
+% begin.rcode  printFungusDetectionData
+% head(fungusDetectionData)
+% end.rcode
+In addition to collecting water samples, several covariates thought to be informative of \emph{Bd} occurrence were measured at each pond.
+% begin.rcode  printFungusSurveyData
+% head(fungusSurveyData)
+% end.rcode
+Here, \code{loadT1} is average \emph{Bd} load among boreal chorus frogs that tested positive for \emph{Bd} during the breeding season,  \code{loadT2} is average \emph{Bd} load among boreal chorus frogs that tested positive for \emph{Bd} during the first two weeks of post-breeding, \code{frogs} is a catch-per-effort index of frog density, and \code{Bd} is the observed prevalence of \emph{Bd} (i.e., not adjusted for imperfect detection) among all frogs tested for \emph{Bd}.
+
+\citet{schmidt_kery:2013} fitted several multi-scale occupancy models to these data using the \pkg{WinBUGS} package.  The results are summarized in table~2 of their paper.  We now illustrate how these models can be fitted using \pkg{eDNAoccupancy}. 
+
+First, the detection matrices \code{y} and \code{K} are computed from the detection data.
+% begin.rcode  computeFungusDetections
+% fungusDetections = occData(fungusDetectionData, siteColName = 'site',
+%                            sampleColName = 'sample')
+% #
+% ## number of detections per sample
+% head(fungusDetections$y)
+% ## number of PCR replicates per sample
+% head(fungusDetections$K)
+% end.rcode
+From matrix \code{K} we see that 4 water samples were collected at each of the first 6 ponds except for \texttt{BakerLake}, where only 3 samples were collected.  In matrix \code{Y}, the number of detections is missing (\texttt{NA}) for any sample that was not collected.
+
+We fit a multi-scale occupancy model without covariates and print a summary of the parameter estimates using the following code.
+% begin.rcode  fitNoCovModelToFungusData
+% set.seed(0157)
+% fit = occModel(detectionMats=fungusDetections, niter=11000,
+%                niterInterval=5000)
+% posteriorSummary(fit, burnin=1000, mcError=TRUE)
+% end.rcode
+The statement \code{set.seed(0157)} is not required, but rather is added to ensure reproducibility of the results reported in this article.
+
+Next we fit a multi-scale occupancy model that uses \code{frogs} as a covariate of eDNA occurrence in samples. This model also was fitted by \citet{schmidt_kery:2013}.
+% begin.rcode  fitFrogCovModelToFungusData
+% ## Center and scale numeric-valued covariate measurements
+% fungusSurveyData.sc = scaleData(fungusSurveyData)
+% 
+% set.seed(0157)
+% fit = occModel(formulaSite          = ~ 1,
+%                formulaSiteAndSample = ~ frogs,
+%                formulaReplicate     = ~ 1,
+%                detectionMats        = fungusDetections,
+%                siteData             = fungusSurveyData.sc,
+%                niter                = 6000,
+%                niterInterval        = 2000,
+%                siteColName = 'site'
+%                )
+% posteriorSummary(fit, burnin=1000, mcError=TRUE)
+% end.rcode
+If we want to assess whether the Markov chain used to compute these estimates appears to have converged, trace plots of the parameters may be created as follows (Fig.~\ref{fig:TracePlotFungusAnalysis}).
+% begin.rcode TracePlotFungusAnalysis, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Trace plots of parameters of model fitted to fungal pathogen data.",
+% plotTrace(fit, c('beta..Intercept.', 'alpha..Intercept.', 'alpha.frogs',
+%             'delta..Intercept.'),  burnin=1000)
+% end.rcode
+Autocorrelation plots of the parameters are created similarly (Fig.~\ref{fig:ACFPlotFungusAnalysis}).
+% begin.rcode ACFPlotFungusAnalysis, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Autocorrelation plots of parameters of model fitted to fungal pathogen data."
+% plotACF(fit, c('beta..Intercept.', 'alpha..Intercept.', 'alpha.frogs',
+%             'delta..Intercept.'),  burnin=1000)
+% end.rcode
+
+
+After inspection of these plots, suppose we decide that the MCMC algorithm needs to be run longer, either to eliminate the transient portion of the Markov chain or to reduce Monte Carlo errors in the parameter estimates.  We can resume the MCMC algorithm for the currently fitted model as follows.
+% begin.rcode  updateFrogCovModelToFungusData
+% fit = updateOccModel(fit, niter=5000, niterInterval=2000)
+% posteriorSummary(fit, burnin=1000,  mcError=TRUE)
+% end.rcode
+These estimates of the parameters are computed using the updated Markov chain containing \rinline{fit$niterations} iterations.  The Monte Carlo errors in these parameter estimates are slightly lower, but the estimates are otherwise similar to those computed with only \rinline{fit$niterations-5000} iterations.
+
+In addition to estimating posterior summaries of the model's formal parameters, we also may be interested in estimating posterior summaries of derived parameters.  For example, in the second model fitted to the \emph{Bd} data, the probability of eDNA occurrence in ponds was assumed to be constant ($\psi$), the conditional probability of eDNA occurrence in samples was assumed to be a function of the frog density index \code{frogs}, and the conditional probability of eDNA detection was assumed to be constant ($p$).  The posterior medians of these derived parameters are estimated as follows.
+% begin.rcode   estimateDerivedParamsForFungusAnalysis
+% psi = posteriorSummaryOfSiteOccupancy(fit, burnin=1000)
+% theta = posteriorSummaryOfSampleOccupancy(fit, burnin=1000)
+% p = posteriorSummaryOfDetection(fit, burnin=1000)
+% #
+% ## output estimates of posterior medians
+% cbind(psi=psi$median, theta=theta$median[,1], p=p$median[,1])
+% end.rcode
+We illustrate the estimated relationship between frog density the probability of occurrence of \emph{Bd} eDNA in samples as follows (Fig.~\ref{fig:FungusOccEstimates}).
+% begin.rcode FungusOccEstimates, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Estimated probabilities of occurrence of Bd eDNA in samples collected from ponds with different densities of frogs.  Symbols are estimates of posterior medians with 95 percent credible intervals."
+% frogs = fungusSurveyData[, 'frogs']
+% plot(frogs, theta$median[,1], ylim=c(0,1), xlim=c(0,0.8), cex=2)
+% segments(frogs, theta$lower[,1], frogs, theta$upper[,1], lwd=2)
+% end.rcode
+This figure is quite similar to that published by \citep[][figure 1]{schmidt_kery:2013}.  In particular, while there appears to be evidence of a relationship, considerable uncertainty exists in the estimated occurrence probabilities of \emph{Bd} eDNA.
+
+One way to assess the relative importance of such estimated relationships is to compare competing models using model-selection criteria.  For example, we compute the PPLC and WAIC criteria for the previously fitted model as follows.
+% begin.rcode  modelSelectionForFungusAnalysis
+% posteriorPredictiveLoss(fit, burnin=1000)
+% WAIC(fit, burnin=1000)
+% end.rcode
+We compared the six models considered by \citet[][table 2]{schmidt_kery:2013} using PPLC and WAIC.  Table~\ref{tab:ModelSelectionFungusAnalysis} contains a summary of our results.  Notice that the model without covariates had the smallest values of PPLC and WAIC, which suggests that any improvements in fit achieved by adding covariates were offset by increases in predictive variance.  Therefore, the simplest of the six models appears to be favored.
+
+
+\begin{table}
+\label{tab:ModelSelectionFungusAnalysis}
+\centering
+\begin{tabular}{lccccc}
+\hline
+       & Occupancy in       &   Occupancy in                 &  Detection in           &       &    \\
+Model  & pond ($\psi$) &   sample  ($\bm{\alpha}$)  &  replicate ($p$)   & PPLC  & WAIC  \\ \hline
+$\psi(\cdot)$, $\theta$(\code{frogs}), $p(\cdot)$   &  0.92  &  $(-0.14, 0.36)^\prime$  &   0.85    &   16.2   &  0.413  \\
+$\psi(\cdot)$, $\theta$(\code{sample}), $p(\cdot)$  &  0.88  &  $(-0.34, 0.29,$           &   0.85    &   16.2   &  0.413  \\
+                                                    &       &  $0.38, -0.72)^\prime$            &     &  \\
+$\psi(\cdot)$, $\theta$(\code{loadT2}), $p(\cdot)$  &  0.91  &  $(0.00, 0.62)^\prime$  &   0.84   &   17.9   &  0.472  \\
+$\psi(\cdot)$, $\theta$(\code{Bd}), $p(\cdot)$      &  0.92  &  $(-0.13, 0.25)^\prime$  &   0.85   &   15.9   &  0.404  \\
+$\psi(\cdot)$, $\theta$(\code{loadT1}), $p(\cdot)$  &  0.91  &  $(-0.09, 0.29)^\prime$  &   0.85   &   16.6   &  0.426  \\
+$\psi(\cdot)$, $\theta(\cdot)$, $p(\cdot)$          &  0.90  &  $(-0.09)^\prime$        &   0.86   &   \textbf{15.6}   &  \textbf{0.393}  \\
+\hline
+\end{tabular}
+\caption{Parameter estimates (posterior means) and model-selection criteria (PPLC and WAIC) for each of models fitted to the \emph{Bd} eDNA detections by \citet{schmidt_kery:2013}.  Each model was fitted by running the MCMC algorithm for 11000 iterations and retaining the last 10000 for estimating posterior summaries.  Bold font indicates lowest values of PPLC and WAIC.}
+\end{table}
+
+
+
+
+
+\subsection{Surveys of an endangered fish species}
+
+The second example considers eDNA surveys of an endangered fish species, the tidewater goby (\emph{Eucyclogbobius newberryi}), which lives in estuaries, lagoons, and sloughs along the coast of California, USA \citep{schmelzle_kinziger:2016}.
+% begin.rcode loadGobyData
+% library(eDNAoccupancy)
+% data(gobyDetectionData)
+% data(gobySurveyData)
+% end.rcode
+In these surveys water samples were collected at each of 39 locations along 400 km of coastline of northern California and southern Oregon, USA.  At each location between 1 and 23 samples were collected depending on habitat size, habitat type and accessibility.  Samples were selected from different sites at each location while attempting to achieve representative spatial coverage within a manageable amount of time.  Detections and nondetections of goby eDNA were assessed using qPCR in each of six subsamples extracted from each water sample.
+% begin.rcode  printGobyDetectionData
+% head(gobyDetectionData)
+% end.rcode
+In addition to collecting water samples, several covariates thought to be informative of goby occurrence or detection were measured at each location.
+% begin.rcode  printGobySurveyData
+% head(gobySurveyData)
+% end.rcode
+Here, \code{twg} is a catch-per-effort index of goby density, \code{sal} is salinity (parts per thousand), \code{turb} is turbidity (measured indirectly using filtration time), \code{fish} is a catch-per-effort index of density of fishes other than tidewater goby, and \code{veg} is a binary indicator of the presence (\code{Pres}) or absence (\code{Abs}) of vegetation (widgeongrass and filamentous algae).
+
+\citet{schmelzle_kinziger:2016} fitted several multi-scale occupancy models to these data using the \pkg{WinBUGS} package.  Their choice of models was based on specific hypotheses about the effects of covariates on the occurrence or detection of goby eDNA \citep[][table~1]{schmelzle_kinziger:2016}.  For example, prior to analysis of the data, presence of \code{veg} was thought to have a positive influence on occurrence of gobies at sample locations because vegetation provides cover for gobies.  Increases in \code{twg} were thought to have a positive influence on a sample's eDNA concentration.  In contrast, increases in \code{sal} were thought to have negative influences on both eDNA concentration (owing to molecular degradation) and on eDNA detection in PCR replicates (owing to inhibition).  Increases in \code{turb} were thought to have  negative effects on eDNA detection owing to inhibition.  Increases in \code{fish} were thought to have negative effects on eDNA detection owing to molecular competition.
+
+\citet{schmelzle_kinziger:2016} attempted to infer the effects of these covariates by modeling the effects of covariates alone or in combination.  However, a formal comparison of models was not completed, and several of the models implied by their hypotheses were not fitted.  Rather than complete an exhaustive analysis of the goby eDNA data, we use \pkg{eDNAoccupancy} to fit a single model that includes all of the covariate effects identified in \citeauthor{schmelzle_kinziger:2016}'s hypotheses.
+% begin.rcode  fitModelToGobyData
+% ### Compute occupancy data matrices
+% gobyDetections = occData(gobyDetectionData, siteColName = 'site',
+%                          sampleColName = 'sample')
+% #
+% ## Center and scale numeric-valued covariate measurements
+% gobySurveyData.sc = scaleData(gobySurveyData)
+% #
+% set.seed(0157)
+% fit = occModel(formulaSite          = ~ veg,
+%                formulaSiteAndSample = ~ sal+twg,
+%                formulaReplicate     = ~ sal+fish+turb,
+%                detectionMats        = gobyDetections,
+%                siteData             = gobySurveyData.sc,
+%                niter                = 11000,
+%                niterInterval        = 2000,
+%                siteColName = 'site'
+%                )
+% posteriorSummary(fit, burnin=1000, mcError=TRUE)
+% end.rcode
+These results suggest that (1) the occurrence of goby eDNA is higher at locations with vegetation, (2) the occurrence of goby eDNA in samples decreases with salinity but is unaffected by the index of goby density, and (3) the detection of goby eDNA in PCR replicates decreases with salinity and with index of density of non-goby fishes but increases with turbidity.
+
+We estimate the derived parameters of the models (i.e., probabilities of eDNA site occupancy, sample occupancy, and detection) as follows.
+% begin.rcode   estimateDerivedParamsForGobyAnalysis
+% psi = posteriorSummaryOfSiteOccupancy(fit, burnin=1000)
+% theta = posteriorSummaryOfSampleOccupancy(fit, burnin=1000)
+% p = posteriorSummaryOfDetection(fit, burnin=1000)
+% #
+% ## output estimates of posterior medians
+% cbind(psi=psi$median, theta=theta$median[,1], p=p$median[,1])
+% end.rcode
+We illustrate the estimated relationship between salinity and the probability of occurrence of goby eDNA in samples as follows (Fig.~\ref{fig:GobyOccEstimates}).
+% begin.rcode GobyOccEstimates, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Estimated probabilities of occurrence of goby eDNA in samples of different salinities.  Symbols are estimates of posterior medians with 95 percent credible intervals."
+% salinity = gobySurveyData[, 'sal']
+% plot(salinity, theta$median[,1], ylim=c(0.4,1), cex=2)
+% segments(salinity, theta$lower[,1], salinity, theta$upper[,1], lwd=2)
+% end.rcode
+Occurrence probability of goby eDNA does appear to have been lower in samples of higher salinity.   We illustrate the estimated relationship between each covariate (\code{sal}, \code{fish}, or \code{turb}) and the probability of detection of goby eDNA in PCR replicates as follows (Fig.~\ref{fig:GobyDetectionEstimates}).
+% begin.rcode GobyDetectionEstimates, fig.lp="fig:", out.width="100%", fig.align="center", fig.cap="Estimated probabilities of detection of goby eDNA in PCR replicates.  Symbols are estimates of posterior medians with 95 percent credible intervals."
+% ylimits = c(0.2,1)
+% par(mfrow=c(1,3))
+% salinity = gobySurveyData[, 'sal']
+% plot(salinity, p$median[,1], ylim=ylimits, cex=2, main='sal')
+% segments(salinity, p$lower[,1], salinity, p$upper[,1], lwd=2)
+% fish = gobySurveyData[, 'fish']
+% plot(fish, p$median[,1], ylim=ylimits, cex=2, main='fish')
+% segments(fish, p$lower[,1], fish, p$upper[,1], lwd=2)
+% turb = gobySurveyData[, 'turb']
+% plot(turb, p$median[,1], ylim=ylimits, cex=2, main='turb')
+% segments(turb, p$lower[,1], turb, p$upper[,1], lwd=2)
+% end.rcode
+Detection probability of goby eDNA does appear to have been lower in samples of higher salinity.  However, the estimated effects of the other two covariates appear to be questionable, particularly given the uncertainty of the estimates.  More analysis of these data is needed -- including a formal comparison of models -- before inferences can be made about the effects of the observed covariates on occurrence and detection of goby eDNA.  Our intention here is only to provide an illustration of the use of \pkg{eDNAoccupancy}, not a comprehensive analysis of the goby data.
+
+
+
+\section{Conclusions}
+
+In this article we introduced \pkg{eDNAoccupancy}, an \proglang{R} package  for fitting Bayesian, multi-scale occupancy models.   This package allows users to specify and fit multi-scale occupancy models with or without covariates, to estimate posterior summaries of occurrence and detection probabilities, and to compare different models using Bayesian model-selection criteria, such as PPLC, WAIC, and AUC.  We illustrated the features of \pkg{eDNAoccupancy} by analyzing two published data sets:   eDNA surveys of a fungal pathogen of amphibians \citep{schmidt_kery:2013} and eDNA surveys of an endangered fish species \citep{schmelzle_kinziger:2016}.
+
+Although we developed \pkg{eDNAoccupancy} for the analysis of data collected in eDNA-based surveys, data obtained using occupancy surveys with other methods of detection (e.g., visual or aural) also can be analyzed with \pkg{eDNAoccupancy}.  In fact, multi-scale occupancy models were developed originally to analyze data obtained using different methods of detection  \citep{nichols_bailey:2008}.  The key requirement is that the occupancy surveys include three, nested levels of sampling:  primary sample units within a study area, secondary sample units collected from each primary unit, and replicates of each secondary sample unit.
+
+The parameters of multi-scale occupancy models can be estimated using non-Bayesian methods (e.g., maximum-likelihood), as implemented in the \pkg{PRESENCE} software program (available at \url{http://www.mbr-pwrc.usgs.gov/software/presence.html}).  However, if scientific interest is focused on estimating presence or absence of a focal species at sampled locations or on predicting species occurrence at unsampled locations, the Bayesian approach provides a complete solution to the inference problem,  whereas  frequentist approaches do not \citep{dorazio:2016}.  We therefore advocate Bayesian analysis of multi-scale occupancy data.
+
+
+We anticipate that users of \pkg{eDNAoccupancy} will no doubt make suggestions that allow us to improve or extend the current version of this package.  Refinements and enhancements of \pkg{eDNAoccupancy} will appear in future versions of this package.
+
+
+ 
+
+
+\section*{Acknowledgments}
+
+We thank Beni Schmidt and his coauthors for allowing us to include the fungal pathogen data in our \proglang{R} package.  We also thank several colleagues (Jason Ferrante, Gaia Meigs-Friend, Maggie Hunter, and Chris Merkes) for providing feedback that improved pre-release versions of \pkg{eDNAoccupancy}.  This article and its accompanying \proglang{R} script was created using the \pkg{knitr} package \citep{xie:2015}.
+
+
+We are grateful for institutional support provided by the Wetland and Aquatic Research Center and the Upper Midwest Environmental Sciences Center of USGS.  Our work was supported also by USGS funding for Invasive Species and for Greater Everglades Priority Ecosystems Science.   Any use of trade, firm, or product names is for descriptive purposes only and does not imply endorsement by the U.S.~Government.
+
+
+\bibliography{eDNAocc}
+
+
+% \newpage
+
+% \appendix
+
+% \section{Markov chain Monte Carlo algorithm}\label{sec:MCMCalgorithm}
+
+
+% In this appendix  we describe the MCMC algorithm that is used to estimate posterior summaries for the parameters of the multi-scale occupancy model.  This algorithm generates a Markov chain whose stationary distribution is equivalent to a posterior distribution with probability density function $\pi(\bm{\beta}, \bm{\alpha}, \bm{\delta}, \bm{z}, \bm{a} \mid \bm{y})$.  In this appendix we use bracket notation \citep{gelfand_smith:1990} to specify probability density functions; thus,  $[x,y]$ denotes the joint density of random variables $X$ and $Y$, $[x | y]$ denotes the conditional density of $X$ given $Y=y$,  and $[x]$ denotes the unconditional (marginal) density of $X$.
+
+% Prior to collecting the eDNA survey data, we assume mutual independence among the parameters $\bm{\beta}$, $\bm{\alpha}$, and $\bm{\delta}$; thus,  their joint prior density is a product of the marginal prior densities of these parameters:
+% \[
+% [\bm{\beta}, \bm{\alpha}, \bm{\delta}] = [\bm{\beta}] [\bm{\alpha}] [\bm{\delta}]
+% \]
+% We assume prior distributions of $\bm{\beta}$, $\bm{\alpha}$, and $\bm{\delta}$ that are weakly informative for the $\Phi(\cdot)$ transformation of these parameters that is used in the model.  Specifically, by assuming a standard normal prior distribution for scalar $\beta$, we induce a uniform prior distribution for $\psi$ by applying the probability integral transformation of $\beta$: $\psi = \Phi(\beta)$.  In addition, we typically center and scale continously-valued regressors to have zero mean and unit variance, so it seems sensible to assume the standard normal prior for every element of $\bm{\beta}$.  For these reasons we assume a multivariate standard normal distribution as a prior for each of the parameters $\bm{\beta}$, $\bm{\alpha}$, and $\bm{\delta}$.
+
+
+
+% Our MCMC algorithm uses either Gibbs or Metropolis-Hastings (MH) sampling \citep{geyer:2011} depending on the parameter.   Each of the following full-conditional distributions is sampled in one iteration of the algorithm:
+% \begin{enumerate}
+
+
+% \item The full conditional density of $\bm{z}$ factors into a product of $M$ independent terms.  The full conditional distribution of $Z_i$ is: \\[6pt]
+% $Z_i | \cdot \sim \left\{\begin{array}{ll}
+% \mathrm{Bernoulli}(1) &  \mbox{if $\sum_{j=1}^{J_i} a_{ij} > 0$}  \\
+% \mathrm{Bernoulli}\left(\frac{\psi_i \prod_{j=1}^{J_i}(1-\theta_{ij})}{\psi_i \prod_{j=1}^{J_i}(1-\theta_{ij}) + 1 - \psi_i}\right) &  \mbox{if $\sum_{j=1}^{J_i} a_{ij} = 0$} 
+% \end{array}
+% \right.$
+
+
+
+% \item The full conditional density of $\bm{a}$ factors into a product of $\sum_{i=1}^M J_i$ independent terms.  The full conditional distribution of $A_{ij}$ is: \\[6pt]
+% $A_{ij} | \cdot \sim \left\{\begin{array}{ll}
+% \mathrm{Bernoulli}(1) &  \mbox{if $y_{ij} > 0$}  \\
+% \mathrm{Bernoulli}\left(\frac{z_i \theta_{ij} (1-p_{ij})^{K_{ij}}}{z_i \theta_{ij} (1-p_{ij})^{K_{ij}} + 1 - z_i \theta_{ij}}\right) &  \mbox{if $ y_{ij} = 0$} 
+% \end{array}
+% \right.$
+
+
+% \item The full conditional distribution of $\bm{\beta}$ has unnormalized density
+% \begin{equation*}
+% [\bm{\beta} | \cdot] = [\bm{\beta}] \,  \prod_{i=1}^M \psi_i^{z_i} (1-\psi_i)^{1-z_i}
+% \end{equation*}
+% where $[\bm{\beta}]$ denotes the density function of a multivariate normal prior with mean $\bm{0}$ and diagonal covariance matrix $\bm{I}$ (the identity matrix).  To sample the full conditional of $\bm{\beta}$, we use Metropolis-Hastings sampling treating $[\bm{\beta} | \cdot]$ as the target density.  In particular, we use a multivariate normal distribution as a proposal and select its parameters to approximate the target distribution.  The mean and covariance matrix of this proposal are computed by recognizing that $[\bm{\beta} | \cdot]$ is the product of the prior density and a likelihood function for a binary-regression model of $z_i$ that uses a probit link function of $\psi_i$ to compute the linear combination of regression parameters, $\bm{x}_i^\prime \bm{\beta}$.  Therefore, we fit this binary-regression model by the method of maximum likelihood and use the maximum-likelihood estimate $\hat{\bm{\beta}}$ and its asymptotic covariance matrix as the proposal distribution's mean and covariance matrix, respectively.
+
+% If $\bm{\beta}$ is a scalar, we sample $[\beta | \cdot]$ more efficiently using Gibbs sampling. In this case $\psi_i = \psi = \Phi(\beta)$ ($\forall i$), and the full conditional distribution of $\psi$ is:
+% \[
+% \psi | \cdot \sim \mathrm{Beta}(a + M \bar{z}, \ b + M (1 - \bar{z})) 
+% \]
+% where $\bar{z} = (1/M) \sum_{i=1}^M z_i$ and where $a$ and $b$ are each assigned a value of one to specify a uniform prior distribution for $\psi$.
+
+
+
+
+% \item The full conditional distribution of $\bm{\alpha}$ has unnormalized density
+% \begin{equation*}
+% [\bm{\alpha} | \cdot] = [\bm{\alpha}] \,  \prod_{\substack{i=1 \\ z_i=1}}^M    \prod_{j=1}^{J_i} \theta_{ij}^{a_{ij}}   (1 - \theta_{ij})^{1 - a_{ij}}   
+% \end{equation*}
+% where $[\bm{\alpha}]$ denotes the density function of a multivariate normal prior with mean $\bm{0}$ and diagonal covariance matrix $\bm{I}$.  To sample the full conditional of $\bm{\alpha}$, we use Metropolis-Hastings sampling treating $[\bm{\alpha} | \cdot]$ as the target density.  In particular, we use a multivariate normal distribution as a proposal and select its parameters to approximate the target distribution.  The mean and covariance matrix of this proposal are computed by recognizing that $[\bm{\alpha} | \cdot]$ is the product of the prior density and a likelihood function for a binary-regression model of $a_{ij}$ that uses a probit link function of $\theta_{ij}$ to compute the linear combination of regression parameters, $\bm{w}_{ij}^\prime \bm{\alpha}$.  Therefore, we fit this binary-regression model by the method of maximum likelihood and use the maximum-likelihood estimate $\hat{\bm{\alpha}}$ and its asymptotic covariance matrix as the proposal distribution's mean and covariance matrix, respectively.
+
+% If the regressors $\bm{w}_{ij}$ specify location-specific values of $\theta$ (that is, if $\theta_{ij} = \theta_i = \Phi(\alpha_i)$ ($\forall j$)), we sample $[\bm{\alpha} | \cdot]$ more efficiently using Gibbs sampling. In this case the full conditional distribution of $\theta_i$ is:
+% \[
+% \theta_i | \cdot \sim \mathrm{Beta}(e + z_i \sum_{j=1}^{J_i} a_{ij}, \ f + z_i (J_i - \sum_{j=1}^{J_i} a_{ij}))
+% \]
+% where $e$ and $f$ are each assigned a value of one to specify a uniform prior distribution for $\theta_i$.
+
+
+
+
+
+% \item The full conditional distribution of $\bm{\delta}$ has unnormalized density
+% \begin{equation*}
+% [\bm{\delta} | \cdot] = [\bm{\delta}] \,  \prod_{i=1}^M   \prod_{\substack{j=1 \\ a_{ij}=1}}^{J_i}  \binom{K_{ij}}{y_{ij}} p_{ij}^{y_{ij}} (1 - p_{ij})^{K_{ij} - y_{ij}} 
+% \end{equation*}
+% where $[\bm{\delta}]$ denotes the density function of a multivariate normal prior with mean $\bm{0}$ and diagonal covariance matrix $\bm{I}$.  To sample the full conditional of $\bm{\delta}$, we use Metropolis-Hastings sampling treating $[\bm{\delta} | \cdot]$ as the target density.  In particular, we use a multivariate normal distribution as a proposal and select its parameters to approximate the target distribution.  The mean and covariance matrix of this proposal are computed by recognizing that $[\bm{\delta} | \cdot]$ is the product of the prior density and a likelihood function for a binomial-regression model of $y_{ij}$ that uses a probit link function of $p_{ij}$ to compute the linear combination of regression parameters, $\bm{v}_{ij}^\prime \bm{\delta}$.  Therefore, we fit this binary-regression model by the method of maximum likelihood and use the maximum-likelihood estimate $\hat{\bm{\delta}}$ and its asymptotic covariance matrix as the proposal distribution's mean and covariance matrix, respectively.
+
+
+% If $\bm{\delta}$ is a scalar, we sample $[\delta | \cdot]$ more efficiently using Gibbs sampling. In this case $p_{ij} = p = \Phi(\delta)$ ($\forall (i,j)$), and the full conditional distribution of $p$ is:
+% \[
+% p | \cdot \sim \mathrm{Beta}(c + \sum_{i=1}^M \sum_{j=1}^{J_i} a_{ij} y_{ij}, \  d + \sum_{i=1}^M \sum_{j=1}^{J_i} a_{ij} (K_{ij} - y_{ij})
+% \]
+% where $c$ and $d$ are each assigned a value of one to specify a uniform prior distribution for $p$.
+
+
+% \end{enumerate}
+
+% We estimate summaries (means, variances, and quantiles) of the posterior distribution and of other ecologically relevant functionals of the Markov chain  using ergodic averages, as described by \citet{dorazio:2016}.   These averages are simulation consistent (that is, the averages converge to posterior expectations as the number of iterations increases) according to the strong law of large numbers for Markov chains \citep{flegal_jones:2011}.    Monte Carlo standard errors of the estimates are computed using the subsampling bootstrap method  \citep{flegal_jones:2010,flegal_jones:2011} with overlapping batch means of size $\lfloor \sqrt{T} \rfloor$, where $T$ is the number of iterations used to compute the ergodic averages.
+
+
+
+
+\end{document}

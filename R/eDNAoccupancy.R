@@ -1,0 +1,11 @@
+#' eDNAoccupancy: Multi-scale Occupancy Modeling of Environmental DNA Data
+#'
+#' Multi-scale occupancy models may be used to estimate the spatial distribution of a species in a variety of settings.  For example, these models are relevant to surveys of environmental DNA (eDNA) that include the following nested levels of sampling:  (1) locations (or primary sample units) within a study area, (2) eDNA samples (or secondary sample units) collected from each location, and (3) subsamples (or replicate observations) taken from each eDNA sample.  In each subsample eDNA is either detected or not detected, usually following a period of amplification using polymerase chain reaction (PCR) chemistry.  This package allows multi-scale occupancy models to be fitted to eDNA survey data using the Bayesian approach to inference.  These models include parameters for computing probabilities of occurrence of eDNA at survey locations, probabilities of occurrence of eDNA in samples taken from those locations, and probabilities of detection of eDNA in replicate subsamples.  Each of these probabilities can be specified as a function of covariates observed in the primary or secondary sample units.
+#'
+#'
+#' 
+
+"_PACKAGE"
+#' @import utils stats mvtnorm pROC mcmcse
+#'
+#' @references  Dorazio RM, Erickson RA  (2018) eDNAoccupancy: An R package for multiscale occupancy modelling of environmental DNA data. Molecular Ecology Resources 18: 368-380.  https://doi.org/10.1111/1755-0998.12735

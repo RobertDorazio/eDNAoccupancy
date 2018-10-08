@@ -1,0 +1,34 @@
+(TeX-add-style-hook
+ "eDNAocc"
+ (lambda ()
+   (LaTeX-add-bibitems
+    "agresti:2002"
+    "brooks_gelman:2011"
+    "chambers:2008"
+    "darling_mahon:2011"
+    "dejean_valentini:2011"
+    "dorazio:2016"
+    "flegal_jones:2010"
+    "flegal_jones:2011"
+    "geyer:2011"
+    "gelfand_ghosh:1998"
+    "gelfand_smith:1990"
+    "hunter_dorazio:2017"
+    "nichols_bailey:2008"
+    "hunter_oyler-mccance:2015"
+    "mordecai_mattsson:2011"
+    "xie:2015"
+    "hyman_collins:2012"
+    "mckee_spear:2015"
+    "watanabe:2010"
+    "watanabe:2013"
+    "lunn_thomas:2000"
+    "mackenzie_nichols:2006"
+    "pilliod_goldberg:2014"
+    "Rsoftware"
+    "royle_dorazio:2008"
+    "schmelzle_kinziger:2016"
+    "schmidt_kery:2013"
+    "dorazio_erickson:2018"))
+ :bibtex)
+

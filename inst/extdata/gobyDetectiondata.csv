@@ -1,0 +1,357 @@
+"site","sample","pcr1","pcr2","pcr3","pcr4","pcr5","pcr6"
+"Hunter Creek",1,0,0,0,0,0,0
+"Pistol River",1,0,0,0,0,0,0
+"Winchuck River",1,0,0,0,0,0,0
+"Tillas Slough",1,0,0,0,0,0,0
+"Lake Earl",1,1,1,1,1,1,1
+"Elk Creek",1,0,0,0,0,0,0
+"Klamath River",1,0,0,0,0,0,0
+"Redwood Creek North",1,0,0,0,0,0,0
+"Redwood Creek South ",1,0,0,0,0,0,0
+"Stone Lagoon",1,1,0,1,1,1,1
+"Big Lagoon",1,1,1,1,1,1,1
+"Little River",1,0,0,0,0,0,0
+"Mad River",1,0,0,0,0,0,0
+"Mad River Slough ",1,0,0,0,0,0,0
+"McDaniel Slough West",1,0,0,0,0,0,0
+"McDaniel Slough East",1,0,0,0,0,0,0
+"Klopp Lake",1,0,0,0,0,0,0
+"Gannon Slough",1,0,0,0,0,0,0
+"Jacoby Creek",1,0,0,0,0,0,0
+"Hwy 101 ditch",1,0,0,0,0,0,0
+"Dead Mouse Marsh",1,0,0,0,0,0,0
+"Wood Creek",1,1,1,1,1,1,0
+"Martin Slough ",1,1,1,1,1,1,1
+"HBNWR SCU North",1,1,1,1,1,1,1
+"HBNWR SCU South",1,0,0,0,0,0,0
+"Ocean Ranch",1,0,0,0,0,0,0
+"Salt River",1,1,1,0,1,1,1
+"Eel River Estuary Preserve",1,0,0,1,1,1,1
+"Ten Mile River",1,1,1,1,1,1,1
+"Virgin Creek",1,1,1,1,1,1,1
+"Pudding Creek",1,1,1,1,1,1,1
+"Noyo River",1,0,0,0,0,0,0
+"Jughandle Creek",1,0,0,0,0,0,0
+"Caspar Creek",1,0,0,0,0,0,0
+"Russian Gulch",1,0,0,0,0,0,0
+"Big River",1,0,0,0,0,0,0
+"Navarro River",1,0,0,0,0,0,0
+"Davis Lake",1,0,0,0,0,0,0
+"Garcia River",1,0,0,0,0,0,0
+"Hunter Creek",2,0,0,0,0,0,0
+"Pistol River",2,0,0,0,0,0,0
+"Winchuck River",2,0,0,0,0,0,0
+"Tillas Slough",2,1,1,1,1,1,1
+"Lake Earl",2,1,1,1,1,1,1
+"Elk Creek",2,0,0,0,0,0,0
+"Klamath River",2,1,0,0,0,0,0
+"Redwood Creek South ",2,0,0,0,0,0,0
+"Stone Lagoon",2,0,0,0,1,1,0
+"Big Lagoon",2,1,1,1,1,1,1
+"Little River",2,0,0,0,0,0,0
+"Mad River",2,0,0,0,0,0,0
+"Mad River Slough ",2,0,0,0,0,0,0
+"McDaniel Slough West",2,0,1,0,0,0,0
+"McDaniel Slough East",2,0,0,0,0,0,0
+"Klopp Lake",2,0,0,0,0,0,0
+"Gannon Slough",2,0,0,0,0,0,0
+"Jacoby Creek",2,0,0,0,0,0,0
+"Hwy 101 ditch",2,0,0,0,0,0,0
+"Dead Mouse Marsh",2,0,0,0,0,0,0
+"Wood Creek",2,0,0,0,0,0,0
+"Martin Slough ",2,1,1,1,1,1,1
+"HBNWR SCU North",2,0,1,1,1,1,1
+"HBNWR SCU South",2,0,0,0,0,0,0
+"Ocean Ranch",2,0,0,0,0,0,0
+"Salt River",2,0,1,0,0,0,1
+"Eel River Estuary Preserve",2,1,1,1,1,1,1
+"Ten Mile River",2,1,1,1,1,1,1
+"Virgin Creek",2,1,1,1,1,1,1
+"Pudding Creek",2,1,1,1,1,1,1
+"Noyo River",2,0,0,0,0,0,0
+"Jughandle Creek",2,0,0,0,0,0,0
+"Caspar Creek",2,1,0,1,1,0,0
+"Russian Gulch",2,0,0,0,0,0,0
+"Big River",2,0,0,0,0,0,0
+"Navarro River",2,0,0,0,0,0,0
+"Davis Lake",2,0,0,0,0,0,0
+"Garcia River",2,0,0,0,0,0,0
+"Hunter Creek",3,0,0,0,0,0,0
+"Pistol River",3,0,0,0,0,0,0
+"Winchuck River",3,0,0,0,0,0,0
+"Tillas Slough",3,1,1,1,1,1,1
+"Lake Earl",3,0,1,0,1,1,1
+"Elk Creek",3,0,0,0,0,0,0
+"Klamath River",3,0,0,0,0,0,0
+"Redwood Creek South ",3,0,0,0,0,0,0
+"Stone Lagoon",3,1,1,1,1,1,1
+"Big Lagoon",3,1,1,1,1,1,1
+"Little River",3,0,0,0,0,0,0
+"Mad River",3,0,0,0,0,0,0
+"Mad River Slough ",3,0,0,0,0,0,0
+"McDaniel Slough West",3,0,0,0,0,0,0
+"McDaniel Slough East",3,0,0,0,0,0,0
+"Klopp Lake",3,0,0,0,0,0,0
+"Gannon Slough",3,0,0,0,0,0,0
+"Jacoby Creek",3,0,0,0,0,0,0
+"Hwy 101 ditch",3,0,0,0,0,0,0
+"Dead Mouse Marsh",3,0,0,0,0,0,0
+"Wood Creek",3,0,0,0,0,0,0
+"Martin Slough ",3,1,1,1,1,1,1
+"HBNWR SCU North",3,0,0,1,0,0,1
+"HBNWR SCU South",3,1,1,0,1,1,1
+"Ocean Ranch",3,0,0,0,0,0,0
+"Salt River",3,1,1,1,1,1,1
+"Eel River Estuary Preserve",3,1,1,1,1,1,1
+"Ten Mile River",3,1,1,1,1,0,0
+"Virgin Creek",3,1,1,1,1,1,1
+"Pudding Creek",3,1,1,1,1,1,1
+"Noyo River",3,0,0,0,0,0,0
+"Jughandle Creek",3,0,0,0,0,0,0
+"Caspar Creek",3,0,0,0,0,0,0
+"Big River",3,0,0,0,0,0,0
+"Navarro River",3,0,0,0,0,0,0
+"Davis Lake",3,1,1,0,0,0,0
+"Garcia River",3,0,0,0,0,0,0
+"Hunter Creek",4,0,0,0,0,0,0
+"Pistol River",4,0,0,0,0,0,0
+"Winchuck River",4,0,0,0,0,0,0
+"Tillas Slough",4,1,0,0,1,1,1
+"Lake Earl",4,1,1,1,1,1,1
+"Klamath River",4,0,0,0,0,0,0
+"Redwood Creek South ",4,0,0,0,0,0,0
+"Stone Lagoon",4,0,0,1,0,0,1
+"Big Lagoon",4,1,1,1,1,1,1
+"Little River",4,0,0,0,0,0,0
+"Mad River",4,0,0,0,0,0,0
+"Mad River Slough ",4,0,0,0,0,0,0
+"McDaniel Slough West",4,0,0,0,0,0,0
+"McDaniel Slough East",4,0,0,0,0,0,0
+"Klopp Lake",4,0,0,0,0,0,0
+"Gannon Slough",4,0,0,0,0,0,0
+"Jacoby Creek",4,0,0,0,0,0,0
+"Hwy 101 ditch",4,0,1,0,1,0,1
+"Wood Creek",4,0,0,0,0,0,0
+"Martin Slough ",4,1,1,1,1,1,1
+"HBNWR SCU North",4,0,0,1,0,1,0
+"HBNWR SCU South",4,1,1,1,1,1,1
+"Ocean Ranch",4,0,0,0,0,0,0
+"Salt River",4,1,1,1,1,1,1
+"Eel River Estuary Preserve",4,1,1,1,1,1,1
+"Ten Mile River",4,1,1,1,0,0,1
+"Pudding Creek",4,1,1,1,1,1,1
+"Noyo River",4,0,0,0,0,0,0
+"Caspar Creek",4,0,0,0,0,0,0
+"Big River",4,0,0,0,0,0,0
+"Navarro River",4,0,0,0,0,0,0
+"Davis Lake",4,1,1,1,1,1,1
+"Garcia River",4,0,0,0,0,0,0
+"Hunter Creek",5,0,0,0,0,0,0
+"Pistol River",5,0,0,0,0,0,0
+"Winchuck River",5,0,0,0,0,0,0
+"Tillas Slough",5,1,1,1,1,1,1
+"Lake Earl",5,1,1,1,1,1,1
+"Klamath River",5,0,0,0,0,0,0
+"Redwood Creek South ",5,0,0,0,0,0,0
+"Stone Lagoon",5,0,0,0,0,0,0
+"Big Lagoon",5,1,1,1,1,1,1
+"Little River",5,0,0,0,0,0,0
+"Mad River",5,0,0,0,0,0,0
+"Mad River Slough ",5,0,0,0,0,0,0
+"McDaniel Slough West",5,0,0,0,0,0,0
+"McDaniel Slough East",5,0,0,0,0,0,0
+"Klopp Lake",5,0,0,0,0,0,0
+"Gannon Slough",5,0,0,0,0,0,0
+"Jacoby Creek",5,0,0,0,0,0,0
+"Hwy 101 ditch",5,0,1,0,0,0,0
+"Wood Creek",5,0,0,0,0,0,0
+"Martin Slough ",5,1,1,1,1,1,1
+"HBNWR SCU North",5,0,0,1,0,1,1
+"HBNWR SCU South",5,0,1,1,0,1,1
+"Ocean Ranch",5,0,0,0,0,0,0
+"Salt River",5,1,1,1,1,1,1
+"Eel River Estuary Preserve",5,1,1,1,1,1,1
+"Ten Mile River",5,1,0,0,1,1,0
+"Pudding Creek",5,1,1,1,1,1,1
+"Noyo River",5,0,0,0,0,0,0
+"Caspar Creek",5,0,0,0,0,0,0
+"Big River",5,0,0,0,0,0,0
+"Navarro River",5,0,0,0,0,0,0
+"Davis Lake",5,1,1,1,1,1,1
+"Garcia River",5,0,0,0,0,0,0
+"Hunter Creek",6,0,0,0,0,0,0
+"Pistol River",6,0,0,0,0,0,0
+"Winchuck River",6,0,0,0,0,0,0
+"Tillas Slough",6,1,0,1,1,1,1
+"Lake Earl",6,1,1,1,1,1,1
+"Klamath River",6,0,0,0,1,0,0
+"Stone Lagoon",6,0,0,0,0,0,0
+"Big Lagoon",6,1,1,1,1,1,1
+"Little River",6,0,0,0,0,0,0
+"Mad River",6,0,0,0,0,0,0
+"Mad River Slough ",6,0,0,0,0,0,0
+"McDaniel Slough West",6,0,1,0,0,0,0
+"McDaniel Slough East",6,0,0,0,0,1,0
+"Klopp Lake",6,0,0,0,0,0,0
+"Gannon Slough",6,0,0,0,0,0,0
+"Hwy 101 ditch",6,0,0,0,0,0,0
+"Wood Creek",6,0,0,0,0,0,0
+"Martin Slough ",6,1,0,1,1,1,1
+"HBNWR SCU North",6,0,1,1,0,0,1
+"HBNWR SCU South",6,1,1,1,1,1,1
+"Ocean Ranch",6,1,1,1,1,1,1
+"Salt River",6,0,1,0,0,1,1
+"Eel River Estuary Preserve",6,1,1,1,1,1,1
+"Ten Mile River",6,0,0,0,0,0,0
+"Noyo River",6,0,0,0,0,0,0
+"Big River",6,0,0,0,0,0,0
+"Navarro River",6,0,0,0,0,0,0
+"Davis Lake",6,1,1,1,1,1,1
+"Garcia River",6,0,0,0,0,0,0
+"Hunter Creek",7,0,0,0,0,0,0
+"Pistol River",7,0,0,0,0,0,0
+"Winchuck River",7,0,0,0,0,0,0
+"Tillas Slough",7,1,0,1,1,1,0
+"Lake Earl",7,0,1,1,1,1,1
+"Klamath River",7,0,0,0,0,0,0
+"Stone Lagoon",7,0,0,1,0,0,0
+"Big Lagoon",7,1,1,1,1,1,1
+"Little River",7,0,0,0,0,0,0
+"Mad River",7,0,0,0,0,0,0
+"Mad River Slough ",7,0,0,0,0,0,0
+"McDaniel Slough West",7,0,0,0,0,0,0
+"McDaniel Slough East",7,0,0,0,0,0,0
+"Klopp Lake",7,0,0,0,0,0,0
+"Gannon Slough",7,0,0,0,0,0,0
+"Hwy 101 ditch",7,0,0,0,0,0,0
+"Martin Slough ",7,1,1,1,1,1,1
+"HBNWR SCU North",7,1,1,0,0,0,0
+"HBNWR SCU South",7,1,1,1,1,1,1
+"Ocean Ranch",7,1,1,1,1,1,1
+"Salt River",7,0,0,0,0,0,0
+"Eel River Estuary Preserve",7,1,1,1,1,1,1
+"Ten Mile River",7,1,1,1,1,1,1
+"Noyo River",7,0,0,0,0,0,0
+"Big River",7,0,0,0,0,0,0
+"Navarro River",7,0,0,0,0,0,0
+"Davis Lake",7,1,1,1,1,1,1
+"Garcia River",7,0,0,0,0,0,0
+"Hunter Creek",8,0,0,0,0,0,0
+"Pistol River",8,0,0,0,0,0,0
+"Winchuck River",8,0,0,0,0,0,0
+"Tillas Slough",8,1,1,1,1,1,1
+"Lake Earl",8,0,1,1,1,0,1
+"Klamath River",8,1,1,0,0,0,0
+"Stone Lagoon",8,0,1,0,0,0,0
+"Big Lagoon",8,1,1,1,1,1,1
+"Little River",8,0,0,0,0,0,0
+"Mad River",8,0,0,0,0,0,0
+"Klopp Lake",8,0,0,0,0,0,0
+"Gannon Slough",8,0,0,0,0,0,0
+"Hwy 101 ditch",8,1,0,0,0,0,0
+"Martin Slough ",8,0,0,0,0,0,0
+"HBNWR SCU North",8,0,0,0,0,1,0
+"HBNWR SCU South",8,1,0,1,1,0,1
+"Ocean Ranch",8,0,0,0,1,0,0
+"Salt River",8,1,0,0,0,1,0
+"Eel River Estuary Preserve",8,1,1,1,1,1,1
+"Ten Mile River",8,1,0,1,1,0,1
+"Noyo River",8,0,0,0,0,0,0
+"Big River",8,0,0,0,0,0,0
+"Navarro River",8,0,0,0,0,0,0
+"Davis Lake",8,1,1,1,1,1,1
+"Garcia River",8,0,0,0,0,0,0
+"Hunter Creek",9,0,0,0,0,0,0
+"Pistol River",9,0,0,0,0,0,0
+"Winchuck River",9,0,0,0,0,0,0
+"Tillas Slough",9,1,1,0,1,1,1
+"Lake Earl",9,0,1,1,0,0,0
+"Klamath River",9,0,0,0,1,1,0
+"Stone Lagoon",9,1,1,0,1,0,1
+"Big Lagoon",9,1,1,1,1,1,1
+"Little River",9,0,0,0,0,0,0
+"Mad River",9,0,0,0,0,0,0
+"Klopp Lake",9,0,0,0,0,0,0
+"Gannon Slough",9,0,0,0,0,0,0
+"Hwy 101 ditch",9,0,0,0,1,0,1
+"Martin Slough ",9,0,0,0,0,0,0
+"HBNWR SCU North",9,0,0,0,0,0,0
+"Ocean Ranch",9,1,1,0,1,1,0
+"Salt River",9,0,0,0,0,1,1
+"Eel River Estuary Preserve",9,1,1,1,1,1,1
+"Ten Mile River",9,1,1,0,1,0,1
+"Noyo River",9,0,0,0,0,0,0
+"Big River",9,0,0,0,0,0,0
+"Navarro River",9,0,0,0,0,0,0
+"Garcia River",9,0,0,0,0,0,0
+"Hunter Creek",10,0,0,0,0,0,0
+"Pistol River",10,0,0,0,0,0,0
+"Winchuck River",10,0,0,0,0,0,0
+"Tillas Slough",10,1,0,0,0,1,1
+"Lake Earl",10,1,0,0,0,1,0
+"Klamath River",10,1,1,1,1,1,1
+"Stone Lagoon",10,0,0,0,0,0,0
+"Big Lagoon",10,1,1,1,1,1,1
+"Little River",10,0,0,0,0,0,0
+"Mad River",10,0,0,0,0,0,0
+"Gannon Slough",10,0,0,0,0,0,0
+"Hwy 101 ditch",10,0,1,0,0,0,0
+"HBNWR SCU North",10,0,1,0,0,0,0
+"Ocean Ranch",10,1,1,1,1,1,1
+"Eel River Estuary Preserve",10,0,1,1,0,0,1
+"Ten Mile River",10,1,0,1,1,0,0
+"Noyo River",10,0,0,0,0,0,0
+"Big River",10,0,0,0,0,0,0
+"Navarro River",10,0,0,0,0,0,0
+"Garcia River",10,0,0,0,0,0,0
+"Hunter Creek",11,0,0,0,0,0,0
+"Pistol River",11,0,0,0,0,0,0
+"Winchuck River",11,0,0,0,0,0,0
+"Lake Earl",11,0,0,0,0,0,0
+"Stone Lagoon",11,1,1,0,1,1,1
+"Big Lagoon",11,1,1,1,1,1,1
+"Little River",11,0,0,0,0,0,0
+"Mad River",11,0,0,0,0,0,0
+"Gannon Slough",11,0,0,0,0,0,0
+"HBNWR SCU North",11,0,1,1,0,0,0
+"Ocean Ranch",11,1,1,1,1,1,1
+"Eel River Estuary Preserve",11,1,0,1,1,1,0
+"Ten Mile River",11,0,0,0,0,0,0
+"Big River",11,0,0,0,0,0,0
+"Lake Earl",12,1,1,1,1,1,1
+"Stone Lagoon",12,1,1,1,1,1,1
+"Big Lagoon",12,1,1,1,1,1,1
+"Gannon Slough",12,0,0,0,0,0,0
+"Ocean Ranch",12,1,0,0,1,0,0
+"Eel River Estuary Preserve",12,1,0,1,1,1,1
+"Lake Earl",13,1,1,1,1,1,0
+"Stone Lagoon",13,1,1,1,1,0,0
+"Big Lagoon",13,1,1,1,1,1,1
+"Ocean Ranch",13,1,1,1,1,1,1
+"Eel River Estuary Preserve",13,1,0,1,0,1,1
+"Lake Earl",14,1,1,1,1,1,0
+"Stone Lagoon",14,1,1,1,1,1,1
+"Big Lagoon",14,1,1,1,1,1,1
+"Ocean Ranch",14,0,0,0,0,0,0
+"Lake Earl",15,1,1,1,1,1,1
+"Stone Lagoon",15,1,1,1,1,1,0
+"Big Lagoon",15,1,1,1,1,1,1
+"Ocean Ranch",15,0,0,0,0,1,0
+"Lake Earl",16,1,1,1,1,1,1
+"Stone Lagoon",16,0,1,0,1,1,0
+"Big Lagoon",16,0,1,1,1,1,1
+"Lake Earl",17,1,1,1,1,1,1
+"Stone Lagoon",17,0,1,1,1,1,1
+"Big Lagoon",17,1,1,1,1,1,1
+"Lake Earl",18,0,1,1,1,1,1
+"Stone Lagoon",18,1,1,1,1,1,1
+"Big Lagoon",18,1,1,0,1,1,1
+"Lake Earl",19,0,1,1,1,1,1
+"Stone Lagoon",19,1,1,1,1,1,1
+"Big Lagoon",19,1,1,1,1,1,1
+"Lake Earl",20,0,0,1,1,1,1
+"Stone Lagoon",20,1,1,1,1,1,1
+"Big Lagoon",20,1,1,1,1,1,1
+"Big Lagoon",21,1,1,1,1,1,1
+"Big Lagoon",22,1,1,1,1,1,1
+"Big Lagoon",23,1,1,1,1,1,1

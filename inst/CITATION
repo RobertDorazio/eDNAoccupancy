@@ -1,0 +1,20 @@
+citHeader("To cite eDNAoccupancy in publications, use:")
+
+citEntry(entry = "Article",
+         title = "eDNAoccupancy: An R package for multiscale occupancy modelling of environmental DNA data",
+         author = personList(as.person("Robert M. Dorazio"),
+                             as.person("Richard A. Erikson")),
+         journal = "Molecular Ecology Resources",
+         year = "2018",
+         volume = "18",
+         pages = "368-380",
+         url = "https://doi.org/10.1111/1755-0998.12735",
+
+         textVersion =
+             paste("Dorazio RM, Erickson RA  (2018).",
+                   "eDNAoccupancy: An R package for multiscale occupancy modelling of environmental DNA data.",
+                   "Molecular Ecology Resources 18: 368-380",
+                   "URL https://doi.org/10.1111/1755-0998.12735")
+         )
+
+         
