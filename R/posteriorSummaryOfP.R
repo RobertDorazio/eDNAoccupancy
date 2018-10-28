@@ -91,16 +91,24 @@ posteriorSummaryOfDetection <- function(
     ## ...compute posterior means and quantiles
     post.stats = array(NA, dim=c(M, J, 4))
     post.stats.MCSE = array(NA, dim=c(M, J, 4))
-    for (j in 1:J) {
-        postStats = EstimatePosteriorStats(mc.p[, , j], burnin)
-        post.stats[, j, ] = postStats$estimate
-        post.stats.MCSE[, j, ] = postStats$MCerror
+    for (i in 1:M) {
+        for (j in 1:J) {
+            if (all(!is.na(mc.p[ , i, j]))) {
+                postStats = EstimatePosteriorStats(matrix(mc.p[, i, j], ncol=1), burnin)
+                post.stats[i, j, ] = postStats$estimate
+                post.stats.MCSE[i, j, ] = postStats$MCerror
+            }
+        }
     }
+    post.names = dimnames(fit$y)[[1]]
+    dimnames(post.stats)[[1]] = post.names
+    dimnames(post.stats.MCSE)[[1]] = post.names
+    
     
 
     retVal = list(mean=post.stats[,,1], median=post.stats[,,2], lower=post.stats[,,3], upper=post.stats[,,4])
     if (mcError) {
-        retVal = list(retVal, mean.MCSE=post.stats.MCSE[,,1], median.MCSE=post.stats.MCSE[,,2], lower.MCSE=post.stats.MCSE[,,3], upper.MCSE=post.stats.MCSE[,,4])
+        retVal = list(mean=post.stats[,,1], median=post.stats[,,2], lower=post.stats[,,3], upper=post.stats[,,4], mean.MCSE=post.stats.MCSE[,,1], median.MCSE=post.stats.MCSE[,,2], lower.MCSE=post.stats.MCSE[,,3], upper.MCSE=post.stats.MCSE[,,4])
     }
     
     retVal

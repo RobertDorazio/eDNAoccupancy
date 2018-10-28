@@ -1,7 +1,7 @@
 Package: eDNAoccupancy
 Title: Multi-scale Occupancy Modeling of Environmental DNA Data
-Version: 0.2.3
-Date: 2018-10-08
+Version: 0.2.4
+Date: 2018-10-28
 Authors@R: c(
 	   person("Robert M.", "Dorazio", email = "bdorazio@usgs.gov",
 	   		   role = c("aut", "cre")),

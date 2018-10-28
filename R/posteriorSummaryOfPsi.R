@@ -81,11 +81,15 @@ posteriorSummaryOfSiteOccupancy <- function(
 
     ## Estimate posterior means and quantiles
     postStats = EstimatePosteriorStats(mc.psi, burnin)
+    post.names = dimnames(fit$y)[[1]]
+    dimnames(postStats$estimate)[[1]] = post.names
+    dimnames(postStats$MCerror)[[1]] = post.names
+    
     
 
     retVal = list(mean=postStats$estimate[,1], median=postStats$estimate[,2], lower=postStats$estimate[,3], upper=postStats$estimate[,4])
     if (mcError) {
-        retVal = list(retVal, mean.MCSE=postStats$MCerror[,1], median.MCSE=postStats$MCSE[,2], lower.MCSE=postStats$MCSE[,3], upper.MCSE=postStats$MCSE[,4])
+        retVal = list(mean=postStats$estimate[,1], median=postStats$estimate[,2], lower=postStats$estimate[,3], upper=postStats$estimate[,4], mean.MCSE=postStats$MCerror[,1], median.MCSE=postStats$MCerror[,2], lower.MCSE=postStats$MCerror[,3], upper.MCSE=postStats$MCerror[,4])
     }
     
     retVal
