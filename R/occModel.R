@@ -159,7 +159,7 @@ occModel <- function(
 
     
     ## Assign values of replicate-level data matrices
-    y = detectionMats$y # observed data (0s and 1s)
+    y = detectionMats$y # number of replicates where eDNA was detected
     K = detectionMats$K # number of replicates per site-sample combination
     M = nrow(K) # number of sites
     J = ncol(K) # maximum number of samples per site
@@ -188,12 +188,12 @@ occModel <- function(
     ## ... Only have Site covariates, but not Site And Sample covariates
     if( is.null(siteAndSampleData) & !is.null(siteData)) {
         
-        mfSite <- model.frame(formula=formulaSite, data = siteData)
+        mfSite <- model.frame(formula=formulaSite, data = siteData, na.action=na.pass)
         X      <- model.matrix(attr(mfSite, "terms"), data = mfSite)
         colNamesOfX = dimnames(X)[[2]]
         
 
-        mfSiteAndSample <- model.frame(formula=formulaSiteAndSample, data=siteData)
+        mfSiteAndSample <- model.frame(formula=formulaSiteAndSample, data=siteData, na.action=na.pass)
         Wmat     <- model.matrix(attr(mfSiteAndSample, "terms"), data = mfSiteAndSample)
         colNamesOfW = dimnames(Wmat)[[2]]
 
@@ -206,7 +206,7 @@ occModel <- function(
         }
 
         
-        mfReplicate <- model.frame(formula = formulaReplicate, data = siteData)
+        mfReplicate <- model.frame(formula = formulaReplicate, data = siteData, na.action=na.pass)
         Vmat        <- model.matrix(attr(mfReplicate, "terms"), data = mfReplicate)
         colNamesOfV = dimnames(Vmat)[[2]]
 
@@ -224,14 +224,14 @@ occModel <- function(
         ## Extract site-level covariates for model matrix X
         siteData <- siteAndSampleData[match(siteID, siteAndSampleData[, siteColName]),  ]
 
-        mfSite <- model.frame(formula=formulaSite, data = siteData)
+        mfSite <- model.frame(formula=formulaSite, data = siteData, na.action=na.pass)
         X      <- model.matrix( attr( mfSite, "terms"), data = mfSite)
         colNamesOfX = dimnames(X)[[2]]
 
 
         ## Use site- and sample-level covariates for model matrices W and V
 
-        mfSiteAndSample <- model.frame(formula =formulaSiteAndSample, data = siteAndSampleData)
+        mfSiteAndSample <- model.frame(formula =formulaSiteAndSample, data = siteAndSampleData, na.action=na.pass)
         Wmat     <- model.matrix( attr(mfSiteAndSample, "terms"), data = mfSiteAndSample)
         colNamesOfW = dimnames(Wmat)[[2]]
 
@@ -247,7 +247,8 @@ occModel <- function(
         }
 
         
-        mfReplicate <- model.frame(formula = formulaReplicate, data = siteAndSampleData)
+        
+        mfReplicate <- model.frame(formula = formulaReplicate, data = siteAndSampleData, na.action=na.pass)
         Vmat     <- model.matrix( attr(mfReplicate, "terms"), data = mfReplicate)
 
         V = array( dim = c(M, J, ncol(Vmat)))
