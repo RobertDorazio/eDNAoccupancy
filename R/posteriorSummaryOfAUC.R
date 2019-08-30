@@ -58,14 +58,11 @@ posteriorSummaryOfAUC <- function(
     alpha.names = paste('alpha', fit$colNamesOfW, sep='.')
     delta.names = paste('delta', fit$colNamesOfV, sep='.')
     mc.names = c(beta.names, alpha.names, delta.names)
-    ## .... remove parentheses from mc.names
-    mc.names = gsub(pattern='(', replacement='.', mc.names, fixed=TRUE)
-    mc.names = gsub(pattern=')', replacement='.', mc.names, fixed=TRUE)
     mcColumnNames = dimnames(read.csv('mc.csv'))[[2]]
     if (length(mc.names) != length(mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
-    if (any(mc.names != mcColumnNames)) {
+    if (any(make.names(mc.names, unique=TRUE) != mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
     
@@ -73,12 +70,10 @@ posteriorSummaryOfAUC <- function(
 
     ## Compute psi vector for each draw of beta in Markov chain
     X = fit$X
-    colNamesOfX = fit$colNamesOfX
-    beta.names = make.names(paste('beta', colNamesOfX, sep='.'))
     
     ## Read Markov chain from file
     mc = as.matrix(read.csv("mc.csv"))
-    mc.beta = mc[ , beta.names]
+    mc.beta = matrix(mc[ , make.names(beta.names, unique=TRUE)], ncol=ncol(X))
     
     mc.psi = pnorm(t(X %*% t(mc.beta)))
     
@@ -90,7 +85,7 @@ posteriorSummaryOfAUC <- function(
     mc.AUC = rep(NA, nrow(mc.Z))
     mc.sumOfZ = rowSums(mc.Z)
     for (i in 1:nrow(mc.Z)) {
-        if (mc.sumOfZ[i]>0 & mc.sumOfZ[i]<ncol(mc.Z)) mc.AUC[i] = as.numeric(roc(mc.Z[i, ], mc.psi[i, ])$auc)
+        if (mc.sumOfZ[i]>0 & mc.sumOfZ[i]<ncol(mc.Z)) mc.AUC[i] = as.numeric(roc(mc.Z[i, ], mc.psi[i, ], quiet=TRUE)$auc)
     }
     if (sum(is.na(mc.AUC))>0) {
         stop(paste('AUC cannot be computed for', sum(is.na(mc.AUC)), 'elements of Markov chain wherein site occupancy predictions were all zeros or all ones'))

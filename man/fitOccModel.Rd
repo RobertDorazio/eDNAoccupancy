@@ -4,8 +4,8 @@
 \alias{fitOccModel}
 \title{Fit a Multi-scale Occupancy Model}
 \usage{
-fitOccModel(niter = 100, niterInterval = 10, y, K, X, W, V, siteEffectInW,
-  colNamesOfX, colNamesOfW, colNamesOfV)
+fitOccModel(niter = 100, niterInterval = 10, y, K, X, W, V,
+  siteEffectInW, colNamesOfX, colNamesOfW, colNamesOfV)
 }
 \arguments{
 \item{niter}{no. iterations of MCMC algorithm}

@@ -19,8 +19,8 @@
 #' data(gobyDetectionData)
 #' detections = occData(gobyDetectionData, "site", "sample")
 #' fit = occModel(detectionMats=detections)
-#' plotTrace(fit, 'beta..Intercept.', burnin=100)
-#' plotTrace(fit, c('beta..Intercept.', 'alpha..Intercept.', 'delta..Intercept.'), burnin=100)
+#' plotTrace(fit, 'beta.(Intercept)', burnin=100)
+#' plotTrace(fit, c('beta.(Intercept)', 'alpha.(Intercept)', 'delta.(Intercept)'), burnin=100)
 
 
 
@@ -39,14 +39,11 @@ plotTrace = function(fit, paramName, burnin = 1) {
     alpha.names = paste('alpha', fit$colNamesOfW, sep='.')
     delta.names = paste('delta', fit$colNamesOfV, sep='.')
     mc.names = c(beta.names, alpha.names, delta.names)
-    ## .... remove parentheses from mc.names
-    mc.names = gsub(pattern='(', replacement='.', mc.names, fixed=TRUE)
-    mc.names = gsub(pattern=')', replacement='.', mc.names, fixed=TRUE)
     mcColumnNames = dimnames(read.csv('mc.csv'))[[2]]
     if (length(mc.names) != length(mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
-    if (any(mc.names != mcColumnNames)) {
+    if (any(make.names(mc.names, unique=TRUE) != mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
     
@@ -54,14 +51,14 @@ plotTrace = function(fit, paramName, burnin = 1) {
     ## Read Markov chain from file
     outSave = -(1:burnin)
     mc = as.matrix(read.csv("mc.csv"))
+    colnames(mc) = mc.names
     mc = mc[ outSave, ]
-    mc.params = dimnames(mc)[[2]]
     
     ## ... make sure paramName is valid
     nparam = length(paramName)
 
     for (i in 1:nparam) {
-        if ( !any(grepl(paramName[i], mc.params)) ) {
+        if ( !any(paramName[i]==mc.names) ) {
             errMsg = paste(paramName[i], 'is not a valid parameter name')
             stop(errMsg)
         }

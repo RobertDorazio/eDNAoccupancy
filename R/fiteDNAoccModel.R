@@ -71,7 +71,6 @@ posInf =  1E10  # arbitrarily large positive number used to avoid assignment of 
     }
 
 
-
 ## Begin MCMC    
 
 ## ... assign prior parameter values
@@ -253,7 +252,7 @@ while(continueGibbs) {
     }
     else {
   ## ... find mode and hessian of unnormalized conditional density function
-    fit = glm(z~X-1, family=binomial(link='probit'))
+    fit = suppressWarnings( glm(z~X-1, family=binomial(link='probit')) )
     if (fit$converged & !fit$boundary) {
   
   ## ... draw candidate using multivariate normal distribution as proposal
@@ -304,7 +303,7 @@ while(continueGibbs) {
         Wmat = matrix(Wmat[zind, ], ncol=dim(W)[3])
     
         ## ... find mode and hessian of unnormalized conditional density function
-        fit = glm(avec~Wmat-1, family=binomial(link='probit'))
+        fit = suppressWarnings( glm(avec~Wmat-1, family=binomial(link='probit')) )
         if (fit$converged & !fit$boundary) {
   
             ## ... draw candidate using multivariate normal distribution as proposal
@@ -351,7 +350,7 @@ while(continueGibbs) {
         Vmat = matrix(Vmat[aind, ], ncol=dim(V)[3])
     
         ## ... find mode and hessian of unnormalized conditional density function
-        fit = glm(cbind(yvec,Kvec-yvec)~Vmat-1, family=binomial(link='probit'))
+        fit = suppressWarnings( glm(cbind(yvec,Kvec-yvec)~Vmat-1, family=binomial(link='probit')) )
         if (fit$converged & !fit$boundary) {
 
             ## ... draw candidate using multivariate normal distribution as proposal

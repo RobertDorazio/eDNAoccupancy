@@ -1,13 +1,13 @@
 Package: eDNAoccupancy
 Title: Multi-scale Occupancy Modeling of Environmental DNA Data
-Version: 0.2.5
-Date: 2019-03-15
+Version: 0.2.6
+Date: 2019-08-30
 Authors@R: c(
 	   person("Robert M.", "Dorazio", email = "bdorazio@usgs.gov",
 	   		   role = c("aut", "cre")),
 	   person("Richard A.", "Erickson", email = "rerickson@usgs.gov",
 	   		     role = c("aut")))
-Description:  Multi-scale occupancy models may be used to estimate the spatial distribution of a species in a variety of settings.  For example, these models are relevant to surveys of environmental DNA (eDNA) that include the following nested levels of sampling:  (1) locations (primary sample units) within a study area, (2) eDNA samples (secondary sample units) collected from each location, and (3) subsamples (replicate observations) taken from each eDNA sample.  In each subsample eDNA is either detected or not detected, usually following a period of amplification using polymerase chain reaction (PCR) chemistry.  This package allows multi-scale occupancy models to be fitted to eDNA survey data using the Bayesian approach to inference.  These models include parameters for computing probabilities of occurrence of eDNA at survey locations, probabilities of occurrence of eDNA in samples taken from those locations, and probabilities of detection of eDNA in replicate subsamples.  Each of these probabilities can be specified as a function of covariates observed in the primary or secondary sample units.
+Description: Multi-scale occupancy models may be used to estimate the spatial distribution of a species in a variety of settings.  For example, these models are relevant to surveys of environmental DNA (eDNA) that include the following nested levels of sampling:  (1) locations (primary sample units) within a study area, (2) eDNA samples (secondary sample units) collected from each location, and (3) subsamples (replicate observations) taken from each eDNA sample.  In each subsample eDNA is either detected or not detected, usually following a period of amplification using polymerase chain reaction (PCR) chemistry.  This package allows multi-scale occupancy models to be fitted to eDNA survey data using the Bayesian approach to inference.  These models include parameters for computing probabilities of occurrence of eDNA at survey locations, probabilities of occurrence of eDNA in samples taken from those locations, and probabilities of detection of eDNA in replicate subsamples.  Each of these probabilities can be specified as a function of covariates observed in the primary or secondary sample units.
 Imports: mvtnorm, stats, utils, pROC, mcmcse
 Suggests: knitr
 VignetteBuilder: knitr
@@ -21,4 +21,4 @@ Copyright: This software is in the public domain because it contains materials
     http://www.usgs.gov/visual-id/credit_usgs.html#copyright
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1

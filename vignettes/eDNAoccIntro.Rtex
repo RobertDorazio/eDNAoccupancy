@@ -301,13 +301,13 @@ Next we fit a multi-scale occupancy model that uses \code{frogs} as a covariate 
 % end.rcode
 If we want to assess whether the Markov chain used to compute these estimates appears to have converged, trace plots of the parameters may be created as follows (Fig.~\ref{fig:TracePlotFungusAnalysis}).
 % begin.rcode TracePlotFungusAnalysis, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Trace plots of parameters of model fitted to fungal pathogen data.",
-% plotTrace(fit, c('beta..Intercept.', 'alpha..Intercept.', 'alpha.frogs',
-%             'delta..Intercept.'),  burnin=1000)
+% plotTrace(fit, c('beta.(Intercept)', 'alpha.(Intercept)', 'alpha.frogs',
+%             'delta.(Intercept)'),  burnin=1000)
 % end.rcode
 Autocorrelation plots of the parameters are created similarly (Fig.~\ref{fig:ACFPlotFungusAnalysis}).
 % begin.rcode ACFPlotFungusAnalysis, fig.lp="fig:", out.width="60%", fig.align="center", fig.cap="Autocorrelation plots of parameters of model fitted to fungal pathogen data."
-% plotACF(fit, c('beta..Intercept.', 'alpha..Intercept.', 'alpha.frogs',
-%             'delta..Intercept.'),  burnin=1000)
+% plotACF(fit, c('beta.(Intercept)', 'alpha.(Intercept)', 'alpha.frogs',
+%             'delta.(Intercept)'),  burnin=1000)
 % end.rcode
 
 

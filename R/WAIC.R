@@ -50,14 +50,11 @@ WAIC = function(fit, burnin = 1) {
     alpha.names = paste('alpha', fit$colNamesOfW, sep='.')
     delta.names = paste('delta', fit$colNamesOfV, sep='.')
     mc.names = c(beta.names, alpha.names, delta.names)
-    ## .... remove parentheses from mc.names
-    mc.names = gsub(pattern='(', replacement='.', mc.names, fixed=TRUE)
-    mc.names = gsub(pattern=')', replacement='.', mc.names, fixed=TRUE)
     mcColumnNames = dimnames(read.csv('mc.csv'))[[2]]
     if (length(mc.names) != length(mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
-    if (any(mc.names != mcColumnNames)) {
+    if (any(make.names(mc.names, unique=TRUE) != mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
     
@@ -89,8 +86,8 @@ WAIC = function(fit, burnin = 1) {
     thirdExpectation = colMeans(logOfProb)
 
     ## Compute WAIC
-    lof = (-1/nobs) * sum( log(firstExpectation) )
-    predVariance =  (1/nobs) * sum( secondExpectation - thirdExpectation^2 )
+    lof = (-1) * sum( log(firstExpectation) )
+    predVariance =   sum( secondExpectation - thirdExpectation^2 )
 
     list(criterion=lof+predVariance,  lackOfFit=lof,  predVariance=predVariance)
 }

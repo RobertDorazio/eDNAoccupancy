@@ -85,14 +85,11 @@ updateOccModel = function(fit, niter, niterInterval) {
     alpha.names = paste('alpha', fit$colNamesOfW, sep='.')
     delta.names = paste('delta', fit$colNamesOfV, sep='.')
     mc.names = c(beta.names, alpha.names, delta.names)
-    ## .... remove parentheses from mc.names
-    mc.names = gsub(pattern='(', replacement='.', mc.names, fixed=TRUE)
-    mc.names = gsub(pattern=')', replacement='.', mc.names, fixed=TRUE)
     mcColumnNames = dimnames(read.csv('mc.csv'))[[2]]
     if (length(mc.names) != length(mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
-    if (any(mc.names != mcColumnNames)) {
+    if (any(make.names(mc.names, unique=TRUE) != mcColumnNames)) {
         stop(paste("Column names in file 'mc.csv' do not match the model matrices of the occModel object"))
     }
     
@@ -232,7 +229,7 @@ while(continueGibbs) {
     }
     else {
   ## ... find mode and hessian of unnormalized conditional density function
-  fit = glm(z~X-1, family=binomial(link='probit'))
+  fit = suppressWarnings( glm(z~X-1, family=binomial(link='probit')) )
   if (fit$converged & !fit$boundary) {
   
   ## ... draw candidate using multivariate normal distribution as proposal
@@ -275,7 +272,7 @@ while(continueGibbs) {
   }
 
    ## ... find mode and hessian of unnormalized conditional density function
-  fit = glm(avec~Wmat-1, family=binomial(link='probit'))
+  fit = suppressWarnings( glm(avec~Wmat-1, family=binomial(link='probit')) )
   if (fit$converged & !fit$boundary) {
   
   ## ... draw candidate using multivariate normal distribution as proposal
@@ -314,7 +311,7 @@ while(continueGibbs) {
         }
     
     ## ... find mode and hessian of unnormalized conditional density function
-    fit = glm(cbind(yvec,Kvec-yvec)~Vmat-1, family=binomial(link='probit'))
+    fit = suppressWarnings( glm(cbind(yvec,Kvec-yvec)~Vmat-1, family=binomial(link='probit')) )
     if (fit$converged & !fit$boundary) {
 
     ## ... draw candidate using multivariate normal distribution as proposal

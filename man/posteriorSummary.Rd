@@ -4,7 +4,8 @@
 \alias{posteriorSummary}
 \title{Posterior Summary For Parameters of a Multi-scale Occupancy Model}
 \usage{
-posteriorSummary(fit, burnin = 1, mcError = FALSE, outputSummary = FALSE)
+posteriorSummary(fit, burnin = 1, mcError = FALSE,
+  outputSummary = FALSE)
 }
 \arguments{
 \item{fit}{object of class occModel that contains data and previous state of the model's Markov chain}

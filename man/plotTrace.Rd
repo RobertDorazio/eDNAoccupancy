@@ -23,6 +23,6 @@ This function plots the Markov chain created by \code{occModel} for each of 1-4 
 data(gobyDetectionData)
 detections = occData(gobyDetectionData, "site", "sample")
 fit = occModel(detectionMats=detections)
-plotTrace(fit, 'beta..Intercept.', burnin=100)
-plotTrace(fit, c('beta..Intercept.', 'alpha..Intercept.', 'delta..Intercept.'), burnin=100)
+plotTrace(fit, 'beta.(Intercept)', burnin=100)
+plotTrace(fit, c('beta.(Intercept)', 'alpha.(Intercept)', 'delta.(Intercept)'), burnin=100)
 }

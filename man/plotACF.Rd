@@ -23,5 +23,5 @@ This function plots the ACF (autocorrelation function) of the Markov chain creat
 data(gobyDetectionData)
 detections = occData(gobyDetectionData, "site", "sample")
 fit = occModel(detectionMats=detections)
-plotACF(fit, c('beta..Intercept.', 'alpha..Intercept.', 'delta..Intercept.'), burnin=100)
+plotACF(fit, c('beta.(Intercept)', 'alpha.(Intercept)', 'delta.(Intercept)'), burnin=100)
 }

@@ -28,15 +28,29 @@ EstimatePosteriorStats = function(mc, burnin=1) {
     dimnames(post.stats) = list(post.names, c('Mean', prob.names))
     post.stats.MCSE = post.stats
 
+
     for (j in 1:ncol(mc)) {
         xvec = as.vector(mc[, j])
-        mc.estimate = mcse(x=xvec, method='obm')
-        post.stats[j, 1] = mc.estimate$est
-        post.stats.MCSE[j, 1] = mc.estimate$se
+        mc.estimate = suppressWarnings(tryCatch( mcse(x=xvec, method='obm'), error=function(condition) TRUE ))
+        if (!is.logical(mc.estimate)) {
+            post.stats[j, 1] = mc.estimate$est
+            post.stats.MCSE[j, 1] = mc.estimate$se
+        }
+        else {
+            post.stats[j, 1] = mean(xvec)
+            ##post.stats.MCSE[j, 1] = NULL
+        }
+        
         for (k in 1:length(prob.quantiles)) {
-            mc.estimate = mcse.q(x=xvec, q=prob.quantiles[k], method='obm')
-            post.stats[j, 1+k] = mc.estimate$est
-            post.stats.MCSE[j, 1+k] = mc.estimate$se
+            mc.estimate = suppressWarnings(tryCatch( mcse.q(x=xvec, q=prob.quantiles[k], method='obm'), error=function(condition) TRUE ))
+            if (!is.logical(mc.estimate)) {
+                post.stats[j, 1+k] = mc.estimate$est
+                post.stats.MCSE[j, 1+k] = mc.estimate$se
+            }
+            else {
+                post.stats[j, 1+k] = quantile(xvec, probs=prob.quantiles[k])
+                ##post.stats.MCSE[j, 1+k] = NULL
+            }
         }
     }
     list(estimate=post.stats, MCerror=post.stats.MCSE)
