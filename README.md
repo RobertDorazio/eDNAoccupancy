@@ -17,13 +17,13 @@ Instructions and examples of using eDNAoccupancy are available in the following 
 
 1. Start R
 
-2. Install R packages `mvtnorm`, `pROC`, `mcmcse`, and `devtools` from the CRAN repository.
+2. Install R packages `mvtnorm`, `pROC`, and `mcmcse` from the CRAN repository.
 
-3. At the R command line, type
+3. Copy the file `eDNAoccupancy_0.2.6.tar.gz` to your R working directory.
 
-        library(devtools)
+4. At the R command line, type
 
-        install_github("RobertDorazio/eDNAoccupancy")
+        install.packages("eDNAoccupancy_0.2.6.tar.gz", repos=NULL, type="source")
 
 
 To use the package, at the R command line, type
