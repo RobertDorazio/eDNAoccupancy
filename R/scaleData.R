@@ -15,7 +15,7 @@
 
 scaleData = function(df, sampleColName = NULL) {
 
-    df.names = names(df)
+    df.names = colnames(df)
 
     ## Make sure value of sampleColName matches that in  file
     if (!is.null(sampleColName)) {
@@ -34,11 +34,11 @@ scaleData = function(df, sampleColName = NULL) {
     ## Split into numbers and integers vs non-numerics
     ind = unlist(lapply(df, class)) == "numeric" | unlist(lapply(df, class)) == "integer"
     xmat = as.matrix(df[ , ind])
-    dimnames(xmat)[[2]] = names(df)[ind]
+    colnames(xmat) = names(df)[ind]
 
     ind =  unlist(lapply(df, class)) != "numeric" & unlist(lapply(df, class)) != "integer"
     notXmat =  data.frame(df[ , ind ])
-    dimnames(notXmat)[[2]] = names(df)[ind]
+    colnames(notXmat) = names(df)[ind]
 
     ## Center and scale columns of numbers or integers
     xMean = apply(xmat, 2, mean, na.rm=TRUE)
